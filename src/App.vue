@@ -1,23 +1,10 @@
 <template>
   <div id="app">
-     <a href="https://vitejs.dev" target="_blank">
-       <img src="/vite.svg" class="logo" alt="Vite logo" />
-     </a>
-     <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-       <img src="/javascript.svg" class="logo vanilla" alt="JavaScript logo" />
-     </a>
-     <h1>Hello Vite!</h1>
-     <!-- <div class="card">
-       <el-button type="button" @click="counter++">counter is {{counter}}</el-button>
-     </div> -->
      <nav>
        <router-link to="/">Home</router-link> |
        <router-link to="/about">About</router-link>
      </nav>
-     <router-view />
-     <p class="read-the-docs">
-       Click on the Vite logo to learn more
-     </p>
+     <router-view class="content"/>
    </div>
 </template>
 
@@ -40,4 +27,18 @@ export default {
 </script>
 
 <style scoped>
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+nav {
+  flex-shrink: 0;
+  height: 60px;
+}
+.content {
+  width: 100%;
+  height: calc(100% - 60px);
+  flex-shrink: 1;
+}
 </style>
