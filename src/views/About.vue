@@ -1,14 +1,17 @@
 <template>
-  <div id="home">
-    <span>This is an about page</span>
+  <div id="about">
+    <SplitView></SplitView>
    </div>
 </template>
 
 <script>
+import SplitView from "@/components/common-split-view/index.vue"
 
 export default {
   name: "About",
-  components: {},
+  components: {
+    SplitView
+  },
   data() {
     return {
       counter: 0

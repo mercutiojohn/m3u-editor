@@ -37,30 +37,48 @@
       </grid-layout>
     </div>
     <div class="col">
-      <h4>layout</h4>
-      <vue-json-editor
-        v-model="layout"
-        :showBtns="false"
-        :mode="'tree'"
-        lang="zh"
-        :expandedOnStart="true"
-      />
-      <h4>options</h4>
-      <vue-json-editor
-        v-model="options"
-        :showBtns="false"
-        :mode="'tree'"
-        lang="zh"
-        :expandedOnStart="true"
-      />
-      <h4>content</h4>
-      <vue-json-editor
-        v-model="content"
-        :showBtns="false"
-        :mode="'tree'"
-        lang="zh"
-        :expandedOnStart="true"
-      />
+      <el-tabs v-model="activeTab" type="card">
+        <el-tab-pane label="component" name="component">
+
+        </el-tab-pane>
+        <el-tab-pane style="height: 100%" label="layout" name="layout">
+          <split-view-new v-if="activeTab === 'layout'">
+            <split-view-item name="layout">
+              <vue-json-editor
+                  v-model="layout"
+                  :showBtns="false"
+                  :mode="'tree'"
+                  lang="zh"
+                  :expandedOnStart="true"
+                />
+            </split-view-item>
+            <split-view-item name="content">
+              <vue-json-editor
+                  v-model="content"
+                  :showBtns="false"
+                  :mode="'tree'"
+                  lang="zh"
+                  :expandedOnStart="true"
+                />
+            </split-view-item>
+          </split-view-new>
+        </el-tab-pane>
+        <el-tab-pane style="height: 100%" label="options" name="options">
+          <split-view-new v-if="activeTab === 'options'">
+            <split-view-item name="options"  :show-header="false">
+              <vue-json-editor
+                v-model="options"
+                :showBtns="false"
+                :mode="'tree'"
+                lang="zh"
+                :expandedOnStart="true"
+              />
+            </split-view-item>
+          </split-view-new>
+          
+        </el-tab-pane>
+      </el-tabs>
+
       <!-- <code v-html="JSON.stringify(layout, 2, ' ')"></code> -->
       <!--         @json-change="onJsonChange"
         @json-save="onJsonSave" -->
@@ -69,11 +87,14 @@
 </template>
 
 <script>
-import VueGridLayout from "vue-grid-layout"
-import VueJsonEditor from "@/components/json-editor/index.vue"
+import VueGridLayout from "vue-grid-layout";
+import VueJsonEditor from "@/components/json-editor/index.vue";
+import SplitView from "@/components/common-split-view/index.vue";
+import SplitViewNew from "@/components/common-split-view/SplitView.vue";
+import SplitViewItem from "@/components/common-split-view/SplitViewItem.vue";
 // import MapBox from "@/components/mapbox"
-import installComponents from "./utils/dataFlow"
-import Vue from "vue"
+import installComponents from "./utils/dataFlow";
+import Vue from "vue";
 
 export default {
   name: "CommonScreen",
@@ -81,12 +102,15 @@ export default {
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
     VueJsonEditor,
+    SplitView,
+    SplitViewNew,
+    SplitViewItem
     // MapBox,
   },
   methods: {
     getComponent(id) {
       let a = this.content.filter((item) => item.id === id);
-      console.log(id, a);
+      // console.log(id, a);
 
       if (a.length && a[0].componentName) {
         return a[0].componentName;
@@ -100,8 +124,8 @@ export default {
   },
   beforeCreate() {
     installComponents(Vue).then(() => {
-      this.loading = false
-    })
+      this.loading = false;
+    });
   },
   mounted() {
     this.options.isDraggable = this.editMode;
@@ -112,6 +136,8 @@ export default {
       loading: true,
       devMode: false,
       editMode: false,
+      activeTab: 'component',
+      activeCollapses: ['layout','content'],
       layout: [
         { x: 0, y: 12, w: 12, h: 9, id: "0aebca", i: "0", moved: false },
         { x: 0, y: 0, w: 12, h: 12, id: "9asd7g", i: "1", moved: false },
@@ -157,6 +183,7 @@ export default {
   height: 100%;
   display: flex;
   gap: 10px;
+  overflow: hidden;
   .grid {
     width: 100%;
     height: 100%;
@@ -166,10 +193,38 @@ export default {
     flex-shrink: 0;
     width: 500px;
     height: 100%;
-    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* overflow-y: scroll; */
+    ::v-deep .el-tabs {
+      height: 100%;
+    }
+    ::v-deep .el-tabs__content {
+      height: 100%;
+      overflow-y: scroll;
+    }
   }
 }
 ::v-deep {
+  
+  
+  .jsoneditor-vue-outer {
+    height: 100%;
+    .jsoneditor-vue{
+      height: 100%;
+      .jsoneditor {
+        border: none;
+        height: 100%;
+        height: calc(100% - 61px);
+        div.jsoneditor-outer.has-nav-bar.has-main-menu-bar {
+          margin-top: 0;
+          padding-top: 0;
+          height: 100%;
+        }
+      }
+    }
+  }
 }
 </style>
 <style>

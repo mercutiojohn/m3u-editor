@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="jsoneditor-vue-outer">
     <div class="jsoneditor-vue"></div>
     <div class="jsoneditor-btns" v-if="showBtns!==false">
       <button
