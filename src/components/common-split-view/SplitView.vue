@@ -1,43 +1,55 @@
 <template>
-  <div class="split-view">
+  <div class="split-view" ref="splitView">
     <div v-if="!loading" :class="{'split-view-container':true, 'vertical': direction === 'vertical', 'horizontal': direction === 'horizontal' }" ref="container">
       <slot></slot>
-      <!-- <div class="split-view-item" v-for="(viewItem, index) in viewItems" :key="index" 
-        @dragstart="startDrag($event, viewItem.id)"
-        @dragover="dragOver($event, viewItem.id)"
-        @drop="drop($event, viewItem.id)"
-        @dragleave="dragLeave($event, viewItem.id)"
-        @dragend="dragEnd($event, viewItem.id)"
-        :class="{ over: index === overIndex }"
-        :style="{ 
-          flexBasis: viewItem.size + 'px'
-        }">
-        <div class="header" draggable>
-          {{viewItem.name}}
-        </div>
-        <component :is="viewItem.component">
-        </component>
-      </div> -->
     </div>
     <div :class="{'split-view-sashes':true, 'vertical': direction === 'vertical', 'horizontal': direction === 'horizontal' }">
-      <div :class="{'split-view-sash':true, 'vertical': direction === 'vertical', 'horizontal': direction === 'horizontal' }" v-for="(sashItem, index) in sashItems" :key="index"
-        :style="getSashStyle(sashItem.position)" @mousedown="startSashResize($event, index)"></div>
+      <div 
+        :class="{'split-view-sash':true, 'vertical': direction === 'vertical', 'horizontal': direction === 'horizontal' }"
+        v-for="(sashItem, index) in sashItems"
+        :key="index"
+        :style="getSashStyle(sashItem.position)"
+        @mousedown="startSashResize($event, index)"
+        @mouseup="endSashResize($event, index)"
+      ></div>
     </div>
   </div>
 </template>
 
 <script>
+import { getCalcResult } from "./utils/index.js"
 export default {
   name: "SplitView",
   componentName: 'SplitView',
+  computed: {
+    cursor() {
+      console.log(document.body.style.cursor)
+      return document.body.style.cursor
+    },
+  },
+  watch: {
+    $slots: {
+      deep: true,
+      handler() {
+        console.log('$slots changed')
+        // 插槽发生变化时执行的方法
+        // this.initViewItems();
+        // this.initSashItems();
+      },
+    },
+  },
   data() {
     return {
+      mountedFlag: false,
       sashItems: [],
       overId: -1,
       loading: false,
       containerWidth: 0,
       containerHeight: 0,
-      fields: []
+      fields: [],
+      parentWidth: 0,
+      parentHeight: 0,
+      parentTop: 0
     };
   },
   provide() {
@@ -49,28 +61,23 @@ export default {
     direction: {
       type: [String],
       default: 'vertical'
-    },
-    // viewItems: {
-    //   type: [Array],
-    //   default: () => [
-    //     { component: () => import('@/components/common-screen/components/Bye.vue'), name:"Bye" },
-    //     { component: () => import('@/components/common-screen/components/Hello.vue'), name:"Hello1" },
-    //     { component: () => import('@/components/common-screen/components/Hello.vue'), name:"Hello2" },
-    //     // 可以根据需要添加更多的视图项
-    //   ]
-    // }
+    }
   },
   created() {
     this.$on('merc.splitView.addField', (field) => {
       if (field) {
-        console.log("addField $on", field)
+        // console.log("addField $on", field)
         this.fields.push(field);
-        console.log("addField afterpush", this.fields)
+        if(this.mountedFlag) {
+          this.initViewItems(()=>{
+            this.initSashItems()
+          });
+        }
       }
     });
     this.$on('merc.splitView.removeField', (field) => {
       if (field) {
-        console.log("removeField $on", field)
+        // console.log("removeField $on", field)
         this.fields.splice(this.fields.indexOf(field), 1);
       }
     });
@@ -103,38 +110,67 @@ export default {
   },
   mounted() {
     // 初始化视图项和 Sash 项
-    this.initViewItems();
-    this.initSashItems();
-    window.addEventListener('resize', this.handleWindowResize);
+    this.initViewItems(()=>{
+      this.initSashItems()
+    });
+    this.mountedFlag = true
+    // window.addEventListener('resize', this.handleWindowResize);
+    this.setupSplitViewWidthListener();
   },
   methods: {
+    calcParentHeight() {
+      try {
+        this.parentHeight =  this.$refs.splitView.offsetHeight
+        // return getComputedStyle(this.$refs.splitView).height.split('px')[0]
+      } catch (e) {}
+    },
+    calcParentWidth() {
+      try {
+        this.parentWidth =  this.$refs.splitView.offsetWidth
+        // return getComputedStyle(this.$refs.splitView).width.split('px')[0]
+      } catch (e) {}
+    },
+    calcParentTop() {
+      try {
+        this.parentTop =  this.$refs.splitView.offsetTop
+        // return getComputedStyle(this.$refs.splitView).height.split('px')[0]
+      } catch (e) {}
+    },
     getSashStyle(position) {
+      // console.log('getSashStyle', position, this.parentWidth, this.parentHeight)
       switch (this.direction) {
         case "vertical":
-          return { top: position + 'px' }
+          return { top: position + 'px', width: this.parentWidth + "px" }
         case "horizontal":
-          return { left: position + 'px' }
+          return { left: position + 'px', top: this.parentTop + 'px', height: this.parentHeight + "px" }
         default:
           return { display: 'none' }
       }
     },
-    // generateRandomId(length = 8) {
-    //   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    //   let id = '';
-    //   for (let i = 0; i < length; i++) {
-    //     const randomIndex = Math.floor(Math.random() * characters.length);
-    //     id += characters.charAt(randomIndex);
-    //   }
-    //   return id;
-    // },
-    initViewItems() {
-      // 初始化视图项
-      // this.fields.forEach((item) => {
-      //   item.id = this.generateRandomId()
-      // })
-      const numItems = this.fields.length; // 视图项的数量
+    setupSplitViewWidthListener() {
+      const resizeObserver = new ResizeObserver(() => {
+        this.calcParentWidth();
+        this.calcParentHeight();
+        this.calcParentTop();
+        this.handleWindowResize();
+      });
+      resizeObserver.observe(this.$refs.splitView);
+    },
+    initViewItems(cb = () => {}) {
+      let initSizes = [];
+      this.fields.forEach((item) => {
+        if (item.initSize) {
+          initSizes.push(item.initSize);
+          // console.log("initSizes", initSizes)
+        }
+      })
+      const initSizesCalc = initSizes.length ? initSizes.join(' + ') : '0px';
+      
+      const numItems = this.fields.length - initSizes.length; // 视图项的数量
       this.containerWidth = this.$refs.container.clientWidth; // 获取 split-view-container 元素的宽度
+      // this.containerWidth = window.getComputedStyle(this.$refs.container).width.split('px')[0];
       this.containerHeight = this.$refs.container.clientHeight; // 获取 split-view-container 元素的宽度
+      // this.containerHeight = window.getComputedStyle(this.$refs.container).height.split('px')[0];
       let totalSize = 0;
       switch (this.direction) {
         case "vertical":
@@ -146,11 +182,31 @@ export default {
         default:
           break;
       }
-      const itemSize = Math.floor(totalSize / numItems); // 计算每个项的宽度
+      // const itemSize = Math.floor((totalSize - initSizes) / numItems); // 计算每个项的宽度
+      // console.log("initViewItems", 
+      //   "parentWidth", this.parentWidth,
+      //   "containerWidth", window.getComputedStyle(this.$refs.container).width,
+      //   "parentHeight", this.parentHeight,
+      //   "containerHeight", window.getComputedStyle(this.$refs.container).height,
+      //   'this.fields.length',this.fields.length,
+      //   'initSizes.length',initSizes.length,
+      //   "calculation", `calc((${totalSize}px - ${initSizesCalc}) / ${numItems})`, 
+      //   "calculated", getCalcResult(`calc((${totalSize}px - ${initSizesCalc}) / ${numItems})`)
+      // )
+
+      const itemSize = getCalcResult(`calc((${totalSize}px - ${initSizesCalc}) / ${numItems})`);
+
       this.fields.forEach((item) => {
-        item.size = itemSize;
+        if (!item.initSize) {
+          item.size = itemSize;
+          // console.log("initViewItems", item.size)
+        } else {
+          item.size = getCalcResult(item.initSize);
+          // console.log("initViewItems", item.size)
+        }
       })
-      console.log(this.fields)
+      cb()
+      // console.log("initViewItems", this.fields)
     },
     initSashItems() {
       // 初始化 Sash 项
@@ -173,6 +229,16 @@ export default {
       return this.sashItems[index].position;
     },
     startSashResize(event, index) {
+      switch (this.direction) {
+        case 'vertical':
+          document.body.style.cursor = 'ns-resize';
+          break;
+        case 'horizontal':
+          document.body.style.cursor = 'ew-resize';
+          break;
+        default:
+          break;
+      }
       // 开始调整大小
       const container = this.$refs.container;
       let initialX = event.clientX;
@@ -203,6 +269,10 @@ export default {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     },
+    endSashResize() {
+      document.body.style.cursor = ''
+      delete document.body.style.cursor
+    },
     resizeViewItems(index, delta) {
       // 调整视图项的大小
       this.fields[index].size += delta;
@@ -217,7 +287,7 @@ export default {
     },
     startDrag(event, itemId) {
       console.log("startDrag", itemId)
-      // 设置拖动的数据（在这里我们只需要传递 item 的 id）
+      // 设置拖动的数据（只需要传递 item 的 id）
       event.dataTransfer.setData('text/plain', itemId);
     },
     dragOver(event, targetItemId) {
@@ -259,8 +329,6 @@ export default {
         const oldWidth = this.containerWidth;
         const oldHeight = this.containerHeight;
 
-        // console.log('width:', oldWidth, newWidth, 'height:', oldHeight, newHeight)
-
         // 更新每个 viewItem 的 size
         this.fields.forEach((item) => {
           switch (this.direction) {
@@ -280,10 +348,7 @@ export default {
 
         // 更新 Sash 的位置
         this.updateSashPositions();
-      } catch (error) {
-        // console.log(error.type, error.message);
-      }
-      
+      } catch (error) {}
     }
   },
 };
@@ -315,36 +380,51 @@ export default {
 }
 
 .split-view-sashes {
-  position: absolute;
   z-index: 1;
   &.horizontal {
-    /* width: 4px; */
-    height: 100%;
+    /* height: 100%; */
+    cursor: ew-resize;
   }
   &.vertical {
-    /* height: 4px; */
-    width: 100%;
+    position: absolute;
+    /* width: 100%; */
+    cursor: ns-resize;
   }
 }
 
 .split-view-sash {
   user-select: none;
-
   position: absolute;
   top: 0;
   bottom: 0;
-  /* background-color: #ccc; */
 
   &:hover {
-    background-color: #ff0000;
+    /* background-color: #ff0000; */
   }
   &.horizontal {
-    width: 4px;
-    height: 100%;
+    transform: translateX(-3px);
+    width: 6px;
+    /* height: 100%; */
+    &::after {
+      transform: translateX(3px);
+      width: 1px;
+      height: 100%;
+    }
   }
   &.vertical {
-    height: 4px;
-    width: 100%;
+    transform: translateY(-3px);
+    height: 6px;
+    /* width: 100%; */
+    &::after {
+      transform: translateY(3px);
+      width: 100%;
+      height: 1px;
+    }
+  }
+  &::after {
+    content: "";
+    display: block;
+    background-color: #ccc;
   }
 }
 </style>

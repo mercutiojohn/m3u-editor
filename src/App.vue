@@ -34,7 +34,10 @@ export default {
 }
 nav {
   flex-shrink: 0;
-  height: 60px;
+  height: calc(60px - 1px);
+  line-height: calc(60px - 1px);
+  padding-left: 10px;
+  border-bottom: 1px solid #ccc;
 }
 .content {
   width: 100%;

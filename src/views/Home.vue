@@ -7,6 +7,7 @@
 
 <script>
 import CommonScreen from "@/components/common-screen/index.vue"
+import "@/assets/el-reset.scss"
 export default {
   name: "Home",
   components: {

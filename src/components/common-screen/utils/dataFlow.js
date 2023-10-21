@@ -14,7 +14,7 @@ const install = async (Vue) => {
   for (const path in modules) {
     if (Object.hasOwnProperty.call(modules, path)) {
       const component = await modules[path]();
-      console.log(component)
+      // console.log('[DataFlow] installComponent',component)
       Vue.component(component.default.name, component.default);
     }
   }

@@ -1,96 +1,103 @@
 <template>
   <div class="screen">
-    <div class="grid" v-if="!loading">
-      <grid-layout
-        :layout.sync="layout"
-        :col-num="options.colNum"
-        :row-height="options.rowHeight"
-        :is-draggable="options.isDraggable"
-        :is-resizable="options.isResizable"
-        :is-mirrored="false"
-        :vertical-compact="options.verticalCompact"
-        :prevent-collision="options.preventCollision"
-        :margin="options.margin"
-        :use-css-transforms="options.useCssTransforms"
-        :responsive="options.responsive"
-        :cols="options.cols"
-      >
-        <grid-item
-          v-for="item in layout"
-          :x="item.x"
-          :y="item.y"
-          :w="item.w"
-          :h="item.h"
-          :i="item.i"
-          :key="item.id"
-          class="grid-item"
+    <split-view direction="horizontal" class="view">
+      <split-view-item name="主界面">
+        <grid-layout  v-if="!loading"
+          :layout.sync="layout"
+          :col-num="options.colNum"
+          :row-height="options.rowHeight"
+          :is-draggable="options.isDraggable"
+          :is-resizable="options.isResizable"
+          :is-mirrored="false"
+          :vertical-compact="options.verticalCompact"
+          :prevent-collision="options.preventCollision"
+          :margin="options.margin"
+          :use-css-transforms="options.useCssTransforms"
+          :responsive="options.responsive"
+          :cols="options.cols"
         >
-          <div v-if="devMode">
-            <p>id:{{ item.id }}</p>
-            <p>i:{{ item.i }}</p>
-            <p>x:{{ item.x }}</p>
-            <p>y:{{ item.y }}</p>
-            <p>h:{{ item.h }}</p>
-          </div>
-          <component :is="getComponent(item.id)"></component>
-        </grid-item>
-      </grid-layout>
-    </div>
-    <div class="col">
-      <el-tabs v-model="activeTab" type="card">
-        <el-tab-pane label="component" name="component">
-
-        </el-tab-pane>
-        <el-tab-pane style="height: 100%" label="layout" name="layout">
-          <split-view-new v-if="activeTab === 'layout'">
-            <split-view-item name="layout">
-              <vue-json-editor
+          <grid-item
+            v-for="item in layout"
+            :x="item.x"
+            :y="item.y"
+            :w="item.w"
+            :h="item.h"
+            :i="item.i"
+            :key="item.id"
+            class="grid-item"
+            :style="gridItemStyles"
+          >
+            <div v-if="devMode">
+              <p>id:{{ item.id }}</p>
+              <p>i:{{ item.i }}</p>
+              <p>x:{{ item.x }}</p>
+              <p>y:{{ item.y }}</p>
+              <p>h:{{ item.h }}</p>
+            </div>
+            <component :is="getComponent(item.id)"></component>
+          </grid-item>
+        </grid-layout>
+      </split-view-item>
+      <split-view-item show-header name="右边栏" init-size="500px">
+        <el-tabs v-model="activeTab" type="card" class="card-reset ios my-tabs">
+          <el-tab-pane label="组件设置" name="component">
+          </el-tab-pane>
+          <el-tab-pane style="height: 100%" label="页面布局" name="layout">
+            <split-view v-if="activeTab === 'layout'" direction="vertical">
+              <split-view-item show-header name="布局">
+                <vue-json-editor
                   v-model="layout"
                   :showBtns="false"
                   :mode="'tree'"
                   lang="zh"
                   :expandedOnStart="true"
                 />
-            </split-view-item>
-            <split-view-item name="content">
-              <vue-json-editor
+              </split-view-item>
+              <split-view-item show-header name="组件绑定">
+                <vue-json-editor
                   v-model="content"
                   :showBtns="false"
                   :mode="'tree'"
                   lang="zh"
                   :expandedOnStart="true"
                 />
-            </split-view-item>
-          </split-view-new>
-        </el-tab-pane>
-        <el-tab-pane style="height: 100%" label="options" name="options">
-          <split-view-new v-if="activeTab === 'options'">
-            <split-view-item name="options"  :show-header="false">
-              <vue-json-editor
-                v-model="options"
-                :showBtns="false"
-                :mode="'tree'"
-                lang="zh"
-                :expandedOnStart="true"
-              />
-            </split-view-item>
-          </split-view-new>
-          
-        </el-tab-pane>
-      </el-tabs>
-
-      <!-- <code v-html="JSON.stringify(layout, 2, ' ')"></code> -->
-      <!--         @json-change="onJsonChange"
-        @json-save="onJsonSave" -->
-    </div>
+              </split-view-item>
+            </split-view>
+          </el-tab-pane>
+          <el-tab-pane style="height: 100%" label="选项" name="options">
+            <split-view v-if="activeTab === 'options'">
+              <split-view-item show-header name="面板设置">
+                <vue-json-editor
+                  v-model="options"
+                  :showBtns="false"
+                  :mode="'form'"
+                  lang="zh"
+                  :expandedOnStart="true"
+                />
+              </split-view-item>
+              <split-view-item show-header name="CSS 样式">
+                <vue-json-editor
+                  v-model="gridItemStyles"
+                  :showBtns="false"
+                  :mode="'tree'"
+                  lang="zh"
+                  :expandedOnStart="true"
+                />
+              </split-view-item>
+            </split-view>
+            
+          </el-tab-pane>
+        </el-tabs>
+      </split-view-item>
+    </split-view>
   </div>
 </template>
 
 <script>
 import VueGridLayout from "vue-grid-layout";
 import VueJsonEditor from "@/components/json-editor/index.vue";
-import SplitView from "@/components/common-split-view/index.vue";
-import SplitViewNew from "@/components/common-split-view/SplitView.vue";
+import SplitViewOld from "@/components/common-split-view/index.vue";
+import SplitView from "@/components/common-split-view/SplitView.vue";
 import SplitViewItem from "@/components/common-split-view/SplitViewItem.vue";
 // import MapBox from "@/components/mapbox"
 import installComponents from "./utils/dataFlow";
@@ -102,8 +109,8 @@ export default {
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
     VueJsonEditor,
+    SplitViewOld,
     SplitView,
-    SplitViewNew,
     SplitViewItem
     // MapBox,
   },
@@ -152,6 +159,11 @@ export default {
         { id: "asd2ed", type: "component", componentName: "" },
         { id: "lk19sf", type: "component", componentName: "" },
       ],
+      gridItemStyles: {
+        borderRadius: '10px',
+        boxShadow: '0 5px 20px -2px #00000038',
+        border: '1px solid #00000033'
+      },
       options: {
         colNum: 12,
         rowHeight: 30,
@@ -160,7 +172,7 @@ export default {
         verticalCompact: false,
         preventCollision: false,
         useCssTransforms: true,
-        margin: [30, 30],
+        margin: [20, 20],
         responsive: false,
         cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
       },
@@ -169,20 +181,28 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.view {
+  width: 100%;
+}
+.my-tabs {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  ::v-deep{ .el-tabs__header {
+    padding: 10px;
+    /* padding-top: 0; */
+  }
+  .el-tabs__content {
+    height: 100%;
+  }}
+}
 .grid-item {
-  /* border: 1px solid #000; */
-
-  /* width: 100%;
-  height: 100%; */
-  border-radius: 10px;
-  box-shadow: 0 5px 20px -2px #00000038;
-  border: 1px solid #00000033;
+  border: 1px solid #000;
   overflow: hidden;
 }
 .screen {
   height: 100%;
   display: flex;
-  gap: 10px;
   overflow: hidden;
   .grid {
     width: 100%;
@@ -190,6 +210,7 @@ export default {
     overflow-y: scroll;
   }
   .col {
+    border-left: 1px solid #ccc;
     flex-shrink: 0;
     width: 500px;
     height: 100%;
@@ -202,13 +223,11 @@ export default {
     }
     ::v-deep .el-tabs__content {
       height: 100%;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
   }
 }
 ::v-deep {
-  
-  
   .jsoneditor-vue-outer {
     height: 100%;
     .jsoneditor-vue{
@@ -230,7 +249,7 @@ export default {
 <style>
 .vue-grid-item.vue-grid-placeholder {
   border-radius: 10px !important;
-  border: 5px dashed #00000013 !important;
+  border: 2px dashed #0000003a !important;
   background: none !important;
   opacity: 1 !important;
   transition-duration: 100ms;

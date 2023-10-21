@@ -1,16 +1,26 @@
 <template>
-  <div id="about">
-    <SplitView></SplitView>
+  <div class="about">
+    <SplitView direction="horizontal" class="view">
+      <SplitViewItem>1</SplitViewItem>
+      <SplitViewItem init-size="500px">
+        <SplitView direction="vertical">
+          <SplitViewItem>111</SplitViewItem>
+          <SplitViewItem>2222</SplitViewItem>
+        </SplitView>
+      </SplitViewItem>
+    </SplitView>
    </div>
 </template>
 
 <script>
-import SplitView from "@/components/common-split-view/index.vue"
+import SplitView from "@/components/common-split-view/SplitView.vue"
+import SplitViewItem from "@/components/common-split-view/SplitViewItem.vue"
 
 export default {
   name: "About",
   components: {
-    SplitView
+    SplitView,
+    SplitViewItem
   },
   data() {
     return {
@@ -25,5 +35,18 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.about {
+  height: calc(100vh - 60px);
+}
+/* .view {
+  ::v-deep {
+    .split-view-sashes {
+      height: calc(100vh - 60px);
+    }
+    .split-view-sash.horizontal {
+      height: calc(100vh - 60px);
+    }
+  }
+} */
 </style>
