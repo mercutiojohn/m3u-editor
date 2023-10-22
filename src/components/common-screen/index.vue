@@ -1,6 +1,36 @@
 <template>
   <div class="screen">
     <split-view direction="horizontal" class="view">
+      <split-view-item show-header name="布局和组件" init-size="350px">
+        <el-tabs v-model="activeTabLeft" type="card" class="card-reset size-mini ios my-tabs">
+          <el-tab-pane style="height: 100%" label="页面布局" name="layout">      
+            <split-view v-if="activeTabLeft === 'layout'" direction="vertical">
+              <split-view-item name="布局">
+                <vue-json-editor
+                  v-model="layout"
+                  :showBtns="false"
+                  :mode="'tree'"
+                  lang="zh"
+                  :expandedOnStart="true"
+                />
+              </split-view-item>
+            </split-view>
+          </el-tab-pane>
+          <el-tab-pane style="height: 100%" label="组件绑定" name="component">      
+            <split-view v-if="activeTabLeft === 'component'" direction="vertical">
+              <split-view-item name="组件绑定">
+                <vue-json-editor
+                  v-model="content"
+                  :showBtns="false"
+                  :mode="'tree'"
+                  lang="zh"
+                  :expandedOnStart="true"
+                />
+              </split-view-item>
+            </split-view>
+          </el-tab-pane>
+        </el-tabs>
+      </split-view-item>
       <split-view-item name="主界面">
         <grid-layout  v-if="!loading"
           :layout.sync="layout"
@@ -38,34 +68,12 @@
           </grid-item>
         </grid-layout>
       </split-view-item>
-      <split-view-item show-header name="右边栏" init-size="500px">
-        <el-tabs v-model="activeTab" type="card" class="card-reset ios my-tabs">
+      <split-view-item show-header name="设置" init-size="400px">
+        <el-tabs v-model="activeTabRight" type="card" class="card-reset size-mini ios my-tabs">
           <el-tab-pane label="组件设置" name="component">
           </el-tab-pane>
-          <el-tab-pane style="height: 100%" label="页面布局" name="layout">
-            <split-view v-if="activeTab === 'layout'" direction="vertical">
-              <split-view-item show-header name="布局">
-                <vue-json-editor
-                  v-model="layout"
-                  :showBtns="false"
-                  :mode="'tree'"
-                  lang="zh"
-                  :expandedOnStart="true"
-                />
-              </split-view-item>
-              <split-view-item show-header name="组件绑定">
-                <vue-json-editor
-                  v-model="content"
-                  :showBtns="false"
-                  :mode="'tree'"
-                  lang="zh"
-                  :expandedOnStart="true"
-                />
-              </split-view-item>
-            </split-view>
-          </el-tab-pane>
-          <el-tab-pane style="height: 100%" label="选项" name="options">
-            <split-view v-if="activeTab === 'options'">
+          <el-tab-pane style="height: 100%" label="面板设置" name="options">
+            <split-view v-if="activeTabRight === 'options'">
               <split-view-item show-header name="面板设置">
                 <vue-json-editor
                   v-model="options"
@@ -96,7 +104,6 @@
 <script>
 import VueGridLayout from "vue-grid-layout";
 import VueJsonEditor from "@/components/json-editor/index.vue";
-import SplitViewOld from "@/components/common-split-view/index.vue";
 import SplitView from "@/components/common-split-view/SplitView.vue";
 import SplitViewItem from "@/components/common-split-view/SplitViewItem.vue";
 // import MapBox from "@/components/mapbox"
@@ -109,7 +116,6 @@ export default {
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
     VueJsonEditor,
-    SplitViewOld,
     SplitView,
     SplitViewItem
     // MapBox,
@@ -143,7 +149,8 @@ export default {
       loading: true,
       devMode: false,
       editMode: false,
-      activeTab: 'component',
+      activeTabLeft: 'layout',
+      activeTabRight: 'component',
       activeCollapses: ['layout','content'],
       layout: [
         { x: 0, y: 12, w: 12, h: 9, id: "0aebca", i: "0", moved: false },

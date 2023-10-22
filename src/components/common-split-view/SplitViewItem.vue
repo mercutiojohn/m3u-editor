@@ -1,33 +1,81 @@
 <template>
-    <div class="split-view-item"
+<!--  
       @dragstart="startDrag($event, id)"
       @dragover="dragOver($event, id)"
       @drop="drop($event, id)"
       @dragleave="dragLeave($event, id)"
-      @dragend="dragEnd($event, id)"
+      @dragend="dragEnd($event, id)" 
+-->
+    <section class="split-view-item"
       :class="{ over: id === splitView.overId }"
       :style="{ flexBasis: size + 'px' }">
-      <div class="header" :draggable="draggable" v-if="showHeader">
+      <div class="header" :draggable="draggable" v-show="(expanded && showHeader) || (!expanded && direction === 'vertical')">
         <span class="title">{{name}}</span>
+        <button class="expand-toggle" @click="expanded = !expanded">
+          <!-- <template v-if="direction === 'vertical'">
+            <ArrowUp v-if="expanded" class="arrow"/>
+            <ArrowDown v-else class="arrow"/>
+          </template>
+          <template v-else>
+            <ArrowLeft v-if="expanded" class="arrow"/>
+            <ArrowRight v-else class="arrow"/>
+          </template> -->
+          <ArrowDown v-if="expanded" class="arrow"/>
+          <ArrowRight v-else class="arrow"/>
+        </button>
       </div>
-      <div :class="{'content': true, 'show-header': showHeader}" ref="content">
+      <div v-show="expanded" :class="{'content': true, 'show-header': showHeader}" ref="content">
         <slot></slot>
       </div>
-    </div>
+      <div @click="expanded = !expanded" class="horizontal-folded" v-show="!expanded && direction === 'horizontal'">
+        <button class="expand-toggle">
+          <!-- <template v-if="direction === 'vertical'">
+            <ArrowUp v-if="expanded" class="arrow"/>
+            <ArrowDown v-else class="arrow"/>
+          </template>
+          <template v-else>
+            <ArrowLeft v-if="expanded" class="arrow"/>
+            <ArrowRight v-else class="arrow"/>
+          </template> -->
+          <ArrowDown v-if="expanded" class="arrow"/>
+          <ArrowRight v-else class="arrow"/>
+        </button>
+        <span class="title">{{name}}</span>
+      </div>
+    </section>
 </template>
 
 <script>
+import ArrowDown from './assets/arrow-down.svg'
+import ArrowUp from './assets/arrow-up.svg'
+import ArrowLeft from './assets/arrow-left.svg'
+import ArrowRight from './assets/arrow-right.svg'
 import emitter from './mixins/emitter';
 import { generateRandomId } from './utils';
 export default {
-  name:"SplitViewItem",
-  inject: ['splitView'],
-  mixins: [emitter],
+  name: "SplitViewItem",
+  components: { ArrowDown, ArrowUp, ArrowLeft, ArrowRight },
+  inject: [ 'splitView' ],
+  mixins: [ emitter ],
   data() {
     return {
       id: "",
-      size: 0
+      size: 0,
+      savedSize: 0,
+      expanded: true
     };
+  },
+  computed: {
+    direction() {
+      if (this.splitView) return this.splitView.direction
+      else return 'vertical'
+    }
+  },
+  watch: {
+    expanded(){
+      console.log('[expand] dispatch', this.expanded, this.id, this.size)
+      this.dispatch('SplitView', 'merc.splitViewItem.expand', [this]);
+    }
   },
   props: {
     draggable: {
@@ -54,32 +102,32 @@ export default {
   },
   mounted() {
     // 初始化视图项和 Sash 项
-    this.dispatch('SplitView', 'merc.splitView.addField', [this]);
+    this.dispatch('SplitView', 'merc.splitViewItem.addField', [this]);
   },
   beforeDestroy() {
-    this.dispatch('SplitView', 'merc.splitView.removeField', [this]);
+    this.dispatch('SplitView', 'merc.splitViewItem.removeField', [this]);
   },
   methods: {
     startDrag(event, itemId) {
       console.log("startDrag", itemId)
-      this.dispatch('SplitView', 'merc.splitView.startDrag', [this], event, itemId);
+      // this.dispatch('SplitView', 'merc.splitViewItem.startDrag', [this], event, itemId);
     },
     dragOver(event, targetItemId) {
       console.log("dragOver", event);
       event.preventDefault();
-      this.dispatch('SplitView', 'merc.splitView.dragOver', [this], event, targetItemId);
+      // this.dispatch('SplitView', 'merc.splitViewItem.dragOver', [this], event, targetItemId);
     },
     drop(event, targetItemId) {
       console.log("drop", targetItemId)
-      this.dispatch('SplitView', 'merc.splitView.drop', [this], event, targetItemId);
+      // this.dispatch('SplitView', 'merc.splitViewItem.drop', [this], event, targetItemId);
     },
     dragLeave(event, targetItemId) {
       console.log("dragLeave", targetItemId)
-      this.dispatch('SplitView', 'merc.splitView.dragLeave', [this], event, targetItemId);
+      // this.dispatch('SplitView', 'merc.splitViewItem.dragLeave', [this], event, targetItemId);
     },
     dragEnd(event, targetItemId) {
       console.log("dragEnd", targetItemId)
-      this.dispatch('SplitView', 'merc.splitView.dragEnd', [this], event, targetItemId);
+      // this.dispatch('SplitView', 'merc.splitViewItem.dragEnd', [this], event, targetItemId);
     }
   },
 };
@@ -87,6 +135,9 @@ export default {
 
 <style lang="scss" scoped>
 .split-view-item {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
   /* border: 1px solid #ccc; */
   overflow: hidden;
   &.over {
@@ -94,13 +145,22 @@ export default {
     opacity: .5;
   }
   .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
     height: 30px;
+    padding: 0 10px;
+    box-sizing: border-box;
     border-bottom: 1px solid #ccc;
     user-select: none;
     .title {
       line-height: 30px;
-      padding-left: 10px;
+    }
+    .expand-toggle {
+      &:hover {
+        background: #00000023;
+      }
     }
   }
   .content {
@@ -108,6 +168,29 @@ export default {
     overflow: auto;
     &.show-header {
       height: calc(100% - 30px);
+    }
+  }
+  .horizontal-folded {
+    writing-mode: vertical-rl;
+    width: 30px;
+    line-height: 30px;
+    height: 100%;
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 0;
+    height: 100%;
+    gap: 10px;
+    &:hover {
+      background: #00000013;
+    }
+  }
+  .expand-toggle {
+    border: none;
+    background: none;
+    .arrow {
+      transform: scale(1.5);
     }
   }
 }

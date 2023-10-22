@@ -1,13 +1,4 @@
 .card-reset {
-  &.ios {
-    .el-tabs__nav {
-      border-radius: 10px !important;
-      padding: 3px;
-    }
-    .el-tabs__item {
-      border-radius: 7px !important;
-    }
-  }
   .el-tabs__header {
     border-bottom: none!important;
     margin-bottom: 0;
@@ -56,15 +47,19 @@
       background: #fff;
     }
   }
-
-  .el-tabs--card {
-    .el-tabs__header {
-      .el-tabs__nav {
-
-      }
-      .el-tabs__item {
-
-      }
+  &.size-mini {
+    .el-tabs__item {
+      line-height: 30px;
+      height: 30px;
+    }
+  }
+  &.ios {
+    .el-tabs__nav {
+      border-radius: 10px !important;
+      padding: 3px;
+    }
+    .el-tabs__item {
+      border-radius: 7px !important;
     }
   }
 }

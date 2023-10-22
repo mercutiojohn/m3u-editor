@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@kingyue/vite-plugin-vue2-svg": "^0.6.0",
     "@vitejs/plugin-vue2": "^2.2.0",
     "unplugin-vue-components": "^0.25.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-svg-loader": "^4.0.0"
   },
   "dependencies": {
     "@vitejs/plugin-vue2-jsx": "^1.1.0",

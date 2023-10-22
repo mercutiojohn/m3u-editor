@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import { getCalcResult } from "./utils/index.js"
+import { getCalcResult } from './utils/index.js'
 export default {
-  name: "SplitView",
+  name: 'SplitView',
   componentName: 'SplitView',
   computed: {
     cursor() {
@@ -64,9 +64,9 @@ export default {
     }
   },
   created() {
-    this.$on('merc.splitView.addField', (field) => {
+    this.$on('merc.splitViewItem.addField', (field) => {
       if (field) {
-        // console.log("addField $on", field)
+        // console.log('addField $on', field)
         this.fields.push(field);
         if(this.mountedFlag) {
           this.initViewItems(()=>{
@@ -75,36 +75,53 @@ export default {
         }
       }
     });
-    this.$on('merc.splitView.removeField', (field) => {
+    this.$on('merc.splitViewItem.removeField', (field) => {
       if (field) {
-        // console.log("removeField $on", field)
+        console.log('removeField $on', field)
         this.fields.splice(this.fields.indexOf(field), 1);
       }
     });
-
-    this.$on('merc.splitView.startDrag', (field, event, itemId) => {
+    // Drag
+    this.$on('merc.splitViewItem.startDrag', (field, event, itemId) => {
       if (field) {
         this.startDrag(event, itemId);
       }
     });
-    this.$on('merc.splitView.dragOver', (field, event, targetItemId) => {
+    this.$on('merc.splitViewItem.dragOver', (field, event, targetItemId) => {
       if (field) {
         this.dragOver(event, targetItemId);
       }
     });
-    this.$on('merc.splitView.drop', (field, event, targetItemId) => {
+    this.$on('merc.splitViewItem.drop', (field, event, targetItemId) => {
       if (field) {
         this.drop(event, targetItemId);
       }
     });
-    this.$on('merc.splitView.dragLeave', (field, event, targetItemId) => {
+    this.$on('merc.splitViewItem.dragLeave', (field, event, targetItemId) => {
       if (field) {
         this.dragLeave(event, targetItemId);
       }
     });
-    this.$on('merc.splitView.dragEnd', (field, event, targetItemId) => {
+    this.$on('merc.splitViewItem.dragEnd', (field, event, targetItemId) => {
       if (field) {
         this.dragEnd(event, targetItemId);
+      }
+    });
+    // Expand
+    this.$on('merc.splitViewItem.expand', (field) => {
+      if (field) {
+        const index = this.fields.findIndex((findField) => findField.id === field.id);
+        console.log('[expand] $on', field.expanded, field.id, field.size, field.savedSize)
+        if (field.expanded) {
+          const savedSize = field.savedSize
+          field.savedSize = 0
+          // console.log('saved size', field.savedSize, 'size add', (savedSize - 30))
+          this.resizeViewItems(index, (savedSize - 30))
+        } else {
+          field.savedSize = field.size
+          // console.log('size add', (0 - (field.size - 30)), 'size saved', field.savedSize)
+          this.resizeViewItems(index, (0 - (field.size - 30)))
+        }
       }
     });
   },
@@ -139,10 +156,10 @@ export default {
     getSashStyle(position) {
       // console.log('getSashStyle', position, this.parentWidth, this.parentHeight)
       switch (this.direction) {
-        case "vertical":
-          return { top: position + 'px', width: this.parentWidth + "px" }
-        case "horizontal":
-          return { left: position + 'px', top: this.parentTop + 'px', height: this.parentHeight + "px" }
+        case 'vertical':
+          return { top: position + 'px', width: this.parentWidth + 'px' }
+        case 'horizontal':
+          return { left: position + 'px', top: this.parentTop + 'px', height: this.parentHeight + 'px' }
         default:
           return { display: 'none' }
       }
@@ -161,7 +178,7 @@ export default {
       this.fields.forEach((item) => {
         if (item.initSize) {
           initSizes.push(item.initSize);
-          // console.log("initSizes", initSizes)
+          // console.log('initSizes', initSizes)
         }
       })
       const initSizesCalc = initSizes.length ? initSizes.join(' + ') : '0px';
@@ -173,40 +190,41 @@ export default {
       // this.containerHeight = window.getComputedStyle(this.$refs.container).height.split('px')[0];
       let totalSize = 0;
       switch (this.direction) {
-        case "vertical":
+        case 'vertical':
           totalSize = this.containerHeight; // 总宽度为 split-view-container 的宽度
           break;
-        case "horizontal":
+        case 'horizontal':
           totalSize = this.containerWidth; // 总宽度为 split-view-container 的宽度
           break;
         default:
           break;
       }
       // const itemSize = Math.floor((totalSize - initSizes) / numItems); // 计算每个项的宽度
-      // console.log("initViewItems", 
-      //   "parentWidth", this.parentWidth,
-      //   "containerWidth", window.getComputedStyle(this.$refs.container).width,
-      //   "parentHeight", this.parentHeight,
-      //   "containerHeight", window.getComputedStyle(this.$refs.container).height,
-      //   'this.fields.length',this.fields.length,
-      //   'initSizes.length',initSizes.length,
-      //   "calculation", `calc((${totalSize}px - ${initSizesCalc}) / ${numItems})`, 
-      //   "calculated", getCalcResult(`calc((${totalSize}px - ${initSizesCalc}) / ${numItems})`)
-      // )
 
-      const itemSize = getCalcResult(`calc((${totalSize}px - ${initSizesCalc}) / ${numItems})`);
+      console.log('initViewItems', 
+        'parentWidth', this.parentWidth,
+        'containerWidth', window.getComputedStyle(this.$refs.container).width,
+        'parentHeight', this.parentHeight,
+        'containerHeight', window.getComputedStyle(this.$refs.container).height,
+        'this.fields.length',this.fields.length,
+        'initSizes.length',initSizes.length,
+        'calculation', `calc((${totalSize}px - ${initSizesCalc}) / ${numItems})`, 
+        'calculated', getCalcResult(`calc((${totalSize}px - (${initSizesCalc})) / ${numItems})`)
+      )
+
+      const itemSize = getCalcResult(`calc((${totalSize}px - (${initSizesCalc})) / ${numItems})`);
 
       this.fields.forEach((item) => {
         if (!item.initSize) {
           item.size = itemSize;
-          // console.log("initViewItems", item.size)
+          // console.log('initViewItems', item.size)
         } else {
           item.size = getCalcResult(item.initSize);
-          // console.log("initViewItems", item.size)
+          // console.log('initViewItems', item.size)
         }
       })
       cb()
-      // console.log("initViewItems", this.fields)
+      // console.log('initViewItems', this.fields)
     },
     initSashItems() {
       // 初始化 Sash 项
@@ -248,10 +266,10 @@ export default {
         const deltaX = event.clientX - initialX;
         const deltaY = event.clientY - initialY;
         switch (this.direction) {
-          case "vertical":
+          case 'vertical':
             this.resizeViewItems(index, deltaY);
             break;
-          case "horizontal":
+          case 'horizontal':
             this.resizeViewItems(index, deltaX);
             break;
           default:
@@ -276,7 +294,11 @@ export default {
     resizeViewItems(index, delta) {
       // 调整视图项的大小
       this.fields[index].size += delta;
-      this.fields[index + 1].size -= delta;
+      if (this.fields[index + 1]) {
+        this.fields[index + 1].size -= delta;
+      } else {
+        this.fields[index - 1].size -= delta;
+      }
       this.updateSashPositions();
     },
     updateSashPositions() {
@@ -286,19 +308,19 @@ export default {
       }
     },
     startDrag(event, itemId) {
-      console.log("startDrag", itemId)
+      console.log('startDrag', itemId)
       // 设置拖动的数据（只需要传递 item 的 id）
       event.dataTransfer.setData('text/plain', itemId);
     },
     dragOver(event, targetItemId) {
-      console.log("dragOver", event);
+      console.log('dragOver', event);
       event.preventDefault();
 
       // 找到目标项的索引
       this.overId = this.fields.find(item => item.id === targetItemId).id;
     },
     drop(event, targetItemId) {
-      console.log("drop", targetItemId)
+      console.log('drop', targetItemId)
       const sourceItemId = event.dataTransfer.getData('text/plain');
 
       // 找到源项和目标项的索引
@@ -422,7 +444,7 @@ export default {
     }
   }
   &::after {
-    content: "";
+    content: '';
     display: block;
     background-color: #ccc;
   }
