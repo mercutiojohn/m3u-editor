@@ -334,14 +334,14 @@ export default {
           break;
       }
       for(let i = 0; i < this.fields.length - 1; i++) {
-        if (i !== index) totalSize -= (this.fields[i].initSize ? this.fields[i].initSize : 0);
-        if (i !== (index + 1)) totalSizePlusOne -= (this.fields[i].initSize ? this.fields[i].initSize : 0);
-        console.log('[SplitView] for', (i !== index) ? index : '', 'total size: ' + totalSize, (i !== (index + 1)) ? (index + 1) : '', 'total size plus one: ' + totalSizePlusOne)
+        if (i !== index) totalSize -= (getCalcResult(this.fields[i].initSize) ? getCalcResult(this.fields[i].initSize) : 0);
+        if (i !== (index + 1)) totalSizePlusOne -= (getCalcResult(this.fields[i].initSize) ? getCalcResult(this.fields[i].initSize) : 0);
+        // console.log('[SplitView] for', (i !== index) ? index + ' ' + (getCalcResult(this.fields[i].initSize) ? getCalcResult(this.fields[i].initSize) : 0) : '', 'total size: ' + totalSize, (i !== (index + 1)) ? (index + 1) + ' ' + (getCalcResult(this.fields[i].initSize) ? getCalcResult(this.fields[i].initSize) : 0) : '', 'total size plus one: ' + totalSizePlusOne)
       }
       // 调整视图项的大小
       if (delta < 0) {
-      if (this.fields[index].size > (this.fields[index].initMinSize ? this.fields[index].initMinSize : 1) && this.fields[index + 1].size < (this.fields[index + 1].initMaxSize ? this.fields[index + 1].initMaxSize : (totalSizePlusOne - 1))) {
-        console.log('[SplitView]', 'resizeViewItems - delta < 0', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
+      if (this.fields[index].size > (getCalcResult(this.fields[index].initMinSize) ? getCalcResult(this.fields[index].initMinSize) : 1) && this.fields[index + 1].size < (getCalcResult(this.fields[index + 1].initMaxSize) ? getCalcResult(this.fields[index + 1].initMaxSize) : (totalSizePlusOne - 1))) {
+        // console.log('[SplitView]', 'resizeViewItems - delta < 0', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
         this.fields[index].size += delta;
         if (this.fields[index + 1]) {
           this.fields[index + 1].size -= delta;
@@ -351,7 +351,7 @@ export default {
           }
         }
       } else {
-        console.log('[SplitView]', 'resizeViewItems - delta < 0 - not satistied', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
+        // console.log('[SplitView]', 'resizeViewItems - delta < 0 - not satistied', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
         this.fields[index].size += 1
         if (this.fields[index + 1]) {
           this.fields[index + 1].size -= 1;
@@ -362,8 +362,8 @@ export default {
         }
       }
       } else if (delta > 0) {
-      if (this.fields[index].size < (this.fields[index].initMaxSize ? this.fields[index].initMaxSize : (totalSize - 1)) && this.fields[index + 1].size > (this.fields[index + 1].initMinSize ? this.fields[index + 1].initMinSize : 1)) {
-        console.log('[SplitView]', 'resizeViewItems - delta > 0', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
+      if (this.fields[index].size < (getCalcResult(this.fields[index].initMaxSize) ? getCalcResult(this.fields[index].initMaxSize) : (totalSize - 1)) && this.fields[index + 1].size > (getCalcResult(this.fields[index + 1].initMinSize) ? getCalcResult(this.fields[index + 1].initMinSize) : 1)) {
+        // console.log('[SplitView]', 'resizeViewItems - delta > 0', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
         this.fields[index].size += delta;
         if (this.fields[index + 1]) {
           this.fields[index + 1].size -= delta;
@@ -373,7 +373,7 @@ export default {
           }
         }
       } else {
-        console.log('[SplitView]', 'resizeViewItems - delta > 0 - not satistied', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
+        // console.log('[SplitView]', 'resizeViewItems - delta > 0 - not satistied', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
         this.fields[index].size += -1
         if (this.fields[index + 1]) {
           this.fields[index + 1].size -= -1;
