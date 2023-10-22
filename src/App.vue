@@ -34,8 +34,9 @@ export default {
 }
 nav {
   flex-shrink: 0;
-  height: calc(60px - 1px);
-  line-height: calc(60px - 1px);
+  height: 60px;
+  box-sizing: border-box;
+  line-height: 60px;
   padding-left: 10px;
   border-bottom: 1px solid #ccc;
 }

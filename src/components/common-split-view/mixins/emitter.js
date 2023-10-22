@@ -23,7 +23,7 @@ export default {
         }
       }
       if (parent) {
-        console.log('[Emitter] dispatch', componentName, this.$parent)
+        // console.log('[Emitter] dispatch', componentName, this.$parent)
         parent.$emit.apply(parent, [eventName].concat(params));
       }
     },

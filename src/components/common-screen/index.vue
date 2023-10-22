@@ -1,11 +1,11 @@
 <template>
   <div class="screen">
-    <split-view direction="horizontal" class="view">
+    <split-view direction="horizontal" class="view" name="编辑器">
       <split-view-item show-header name="布局和组件" init-size="350px">
         <el-tabs v-model="activeTabLeft" type="card" class="card-reset size-mini ios my-tabs">
           <el-tab-pane style="height: 100%" label="页面布局" name="layout">      
-            <split-view v-if="activeTabLeft === 'layout'" direction="vertical">
-              <split-view-item name="布局">
+            <split-view v-if="activeTabLeft === 'layout'" direction="vertical" name="左边栏-页面布局">
+              <split-view-item name="页面布局">
                 <vue-json-editor
                   v-model="layout"
                   :showBtns="false"
@@ -17,7 +17,7 @@
             </split-view>
           </el-tab-pane>
           <el-tab-pane style="height: 100%" label="组件绑定" name="component">      
-            <split-view v-if="activeTabLeft === 'component'" direction="vertical">
+            <split-view v-if="activeTabLeft === 'component'" direction="vertical" name="左边栏-组件绑定">
               <split-view-item name="组件绑定">
                 <vue-json-editor
                   v-model="content"
@@ -73,7 +73,7 @@
           <el-tab-pane label="组件设置" name="component">
           </el-tab-pane>
           <el-tab-pane style="height: 100%" label="面板设置" name="options">
-            <split-view v-if="activeTabRight === 'options'">
+            <split-view v-if="activeTabRight === 'options'" name="右边栏-面板设置">
               <split-view-item show-header name="面板设置">
                 <vue-json-editor
                   v-model="options"

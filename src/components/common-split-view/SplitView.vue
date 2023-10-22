@@ -17,13 +17,13 @@
 </template>
 
 <script>
-import { getCalcResult } from './utils/index.js'
+import { generateRandomId, getCalcResult } from './utils'
 export default {
   name: 'SplitView',
   componentName: 'SplitView',
   computed: {
     cursor() {
-      console.log(document.body.style.cursor)
+      // console.log(document.body.style.cursor)
       return document.body.style.cursor
     },
   },
@@ -31,7 +31,7 @@ export default {
     $slots: {
       deep: true,
       handler() {
-        console.log('$slots changed')
+        // console.log('$slots changed')
         // 插槽发生变化时执行的方法
         // this.initViewItems();
         // this.initSashItems();
@@ -40,6 +40,7 @@ export default {
   },
   data() {
     return {
+      id: '',
       mountedFlag: false,
       sashItems: [],
       overId: -1,
@@ -61,9 +62,18 @@ export default {
     direction: {
       type: [String],
       default: 'vertical'
+    },
+    name: {
+      type: [String, Boolean],
+      default: false
     }
   },
   created() {
+    // console.log('[SplitView]', 'created', this.name ? this.name : this.$vnode.tag)
+    if(!this.id) {
+      this.id = generateRandomId()
+    }
+
     this.$on('merc.splitViewItem.addField', (field) => {
       if (field) {
         // console.log('addField $on', field)
@@ -77,7 +87,7 @@ export default {
     });
     this.$on('merc.splitViewItem.removeField', (field) => {
       if (field) {
-        console.log('removeField $on', field)
+        // console.log('removeField $on', field)
         this.fields.splice(this.fields.indexOf(field), 1);
       }
     });
@@ -110,8 +120,9 @@ export default {
     // Expand
     this.$on('merc.splitViewItem.expand', (field) => {
       if (field) {
+        field.expanded = !field.expanded
         const index = this.fields.findIndex((findField) => findField.id === field.id);
-        console.log('[expand] $on', field.expanded, field.id, field.size, field.savedSize)
+        // console.log('[expand] $on', field.expanded, field.id, field.size, field.savedSize)
         if (field.expanded) {
           const savedSize = field.savedSize
           field.savedSize = 0
@@ -126,6 +137,7 @@ export default {
     });
   },
   mounted() {
+    // console.log('[SplitView]', 'mounted', this.name ? this.name : this.$vnode.tag)
     // 初始化视图项和 Sash 项
     this.initViewItems(()=>{
       this.initSashItems()
@@ -134,23 +146,30 @@ export default {
     // window.addEventListener('resize', this.handleWindowResize);
     this.setupSplitViewWidthListener();
   },
+  beforeUpdate () {
+    // console.log('[SplitView]', 'beforeUpdate', this.name ? this.name : this.$vnode.tag)
+    // this.mountedFlag = false
+  },
+  updated () {
+    // console.log('[SplitView]', 'updated', this.name ? this.name : this.$vnode.tag)
+  },
   methods: {
     calcParentHeight() {
       try {
-        this.parentHeight =  this.$refs.splitView.offsetHeight
-        // return getComputedStyle(this.$refs.splitView).height.split('px')[0]
+        this.parentHeight = this.$refs.splitView.offsetHeight ? this.$refs.splitView.offsetHeight : 0
+        // this.parentHeight = getComputedStyle(this.$refs.splitView).height.split('px')[0]
       } catch (e) {}
     },
     calcParentWidth() {
       try {
-        this.parentWidth =  this.$refs.splitView.offsetWidth
-        // return getComputedStyle(this.$refs.splitView).width.split('px')[0]
+        this.parentWidth = this.$refs.splitView.offsetWidth ? this.$refs.splitView.offsetWidth : 0
+        // this.parentWidth = getComputedStyle(this.$refs.splitView).width.split('px')[0]
       } catch (e) {}
     },
     calcParentTop() {
       try {
-        this.parentTop =  this.$refs.splitView.offsetTop
-        // return getComputedStyle(this.$refs.splitView).height.split('px')[0]
+        this.parentTop = this.$refs.splitView.offsetTop ? this.$refs.splitView.offsetTop : 0
+        // this.parentTop =  getComputedStyle(this.$refs.splitView).height.split('px')[0]
       } catch (e) {}
     },
     getSashStyle(position) {
@@ -166,6 +185,7 @@ export default {
     },
     setupSplitViewWidthListener() {
       const resizeObserver = new ResizeObserver(() => {
+        // console.log('[SplitView]', 'Resizing')
         this.calcParentWidth();
         this.calcParentHeight();
         this.calcParentTop();
@@ -184,9 +204,9 @@ export default {
       const initSizesCalc = initSizes.length ? initSizes.join(' + ') : '0px';
       
       const numItems = this.fields.length - initSizes.length; // 视图项的数量
-      this.containerWidth = this.$refs.container.clientWidth; // 获取 split-view-container 元素的宽度
+      this.containerWidth = this.$refs.container.clientWidth ? this.$refs.container.clientWidth : 0.001; // 获取 split-view-container 元素的宽度
       // this.containerWidth = window.getComputedStyle(this.$refs.container).width.split('px')[0];
-      this.containerHeight = this.$refs.container.clientHeight; // 获取 split-view-container 元素的宽度
+      this.containerHeight = this.$refs.container.clientHeight ? this.$refs.container.clientHeight : 0.001; // 获取 split-view-container 元素的宽度
       // this.containerHeight = window.getComputedStyle(this.$refs.container).height.split('px')[0];
       let totalSize = 0;
       switch (this.direction) {
@@ -201,7 +221,7 @@ export default {
       }
       // const itemSize = Math.floor((totalSize - initSizes) / numItems); // 计算每个项的宽度
 
-      console.log('initViewItems', 
+      /* console.log('[SplitView]', 'initViewItems', 
         'parentWidth', this.parentWidth,
         'containerWidth', window.getComputedStyle(this.$refs.container).width,
         'parentHeight', this.parentHeight,
@@ -210,7 +230,7 @@ export default {
         'initSizes.length',initSizes.length,
         'calculation', `calc((${totalSize}px - ${initSizesCalc}) / ${numItems})`, 
         'calculated', getCalcResult(`calc((${totalSize}px - (${initSizesCalc})) / ${numItems})`)
-      )
+      ) */
 
       const itemSize = getCalcResult(`calc((${totalSize}px - (${initSizesCalc})) / ${numItems})`);
 
@@ -227,6 +247,7 @@ export default {
       // console.log('initViewItems', this.fields)
     },
     initSashItems() {
+      // console.log('initSashItems')
       // 初始化 Sash 项
       this.sashItems = [];
       for (let i = 0; i < this.fields.length - 1; i++) {
@@ -247,15 +268,17 @@ export default {
       return this.sashItems[index].position;
     },
     startSashResize(event, index) {
-      switch (this.direction) {
-        case 'vertical':
-          document.body.style.cursor = 'ns-resize';
-          break;
-        case 'horizontal':
-          document.body.style.cursor = 'ew-resize';
-          break;
-        default:
-          break;
+      if (this.fields[index].expanded) {
+        switch (this.direction) {
+          case 'vertical':
+            document.body.style.cursor = 'ns-resize';
+            break;
+          case 'horizontal':
+            document.body.style.cursor = 'ew-resize';
+            break;
+          default:
+            break;
+        }
       }
       // 开始调整大小
       const container = this.$refs.container;
@@ -263,20 +286,22 @@ export default {
       let initialY = event.clientY;
 
       const handleMouseMove = (event) => {
-        const deltaX = event.clientX - initialX;
-        const deltaY = event.clientY - initialY;
-        switch (this.direction) {
-          case 'vertical':
-            this.resizeViewItems(index, deltaY);
-            break;
-          case 'horizontal':
-            this.resizeViewItems(index, deltaX);
-            break;
-          default:
-            break;
+        if (this.fields[index].expanded) {
+          const deltaX = event.clientX - initialX;
+          const deltaY = event.clientY - initialY;
+          switch (this.direction) {
+            case 'vertical':
+              this.resizeViewItems(index, deltaY);
+              break;
+            case 'horizontal':
+              this.resizeViewItems(index, deltaX);
+              break;
+            default:
+              break;
+          }
+          initialX = event.clientX;
+          initialY = event.clientY;
         }
-        initialX = event.clientX;
-        initialY = event.clientY;
       };
 
       const handleMouseUp = () => {
@@ -292,12 +317,72 @@ export default {
       delete document.body.style.cursor
     },
     resizeViewItems(index, delta) {
+      let totalSize = 0
+      let totalSizePlusOne = 0
+      this.containerWidth = this.$refs.container.clientWidth ? this.$refs.container.clientWidth : 0.001; // 获取 split-view-container 元素的宽度
+      this.containerHeight = this.$refs.container.clientHeight ? this.$refs.container.clientHeight : 0.001; // 获取 split-view-container 元素的宽度
+      switch (this.direction) {
+        case 'vertical':
+          totalSize = this.containerHeight; // 总宽度为 split-view-container 的宽度
+          totalSizePlusOne = this.containerHeight; // 总宽度为 split-view-container 的宽度
+          break;
+        case 'horizontal':
+          totalSize = this.containerWidth; // 总宽度为 split-view-container 的宽度
+          totalSizePlusOne = this.containerWidth; // 总宽度为 split-view-container 的宽度
+          break;
+        default:
+          break;
+      }
+      for(let i = 0; i < this.fields.length - 1; i++) {
+        if (i !== index) totalSize -= (this.fields[i].initSize ? this.fields[i].initSize : 0);
+        if (i !== (index + 1)) totalSizePlusOne -= (this.fields[i].initSize ? this.fields[i].initSize : 0);
+        console.log('[SplitView] for', (i !== index) ? index : '', 'total size: ' + totalSize, (i !== (index + 1)) ? (index + 1) : '', 'total size plus one: ' + totalSizePlusOne)
+      }
       // 调整视图项的大小
-      this.fields[index].size += delta;
-      if (this.fields[index + 1]) {
-        this.fields[index + 1].size -= delta;
+      if (delta < 0) {
+      if (this.fields[index].size > (this.fields[index].initMinSize ? this.fields[index].initMinSize : 1) && this.fields[index + 1].size < (this.fields[index + 1].initMaxSize ? this.fields[index + 1].initMaxSize : (totalSizePlusOne - 1))) {
+        console.log('[SplitView]', 'resizeViewItems - delta < 0', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
+        this.fields[index].size += delta;
+        if (this.fields[index + 1]) {
+          this.fields[index + 1].size -= delta;
+        } else {
+          if (this.direction === 'horizontal') {
+            this.fields[index - 1].size -= delta;
+          }
+        }
       } else {
-        this.fields[index - 1].size -= delta;
+        console.log('[SplitView]', 'resizeViewItems - delta < 0 - not satistied', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
+        this.fields[index].size += 1
+        if (this.fields[index + 1]) {
+          this.fields[index + 1].size -= 1;
+        } else {
+          if (this.direction === 'horizontal') {
+            this.fields[index - 1].size -= 1;
+          }
+        }
+      }
+      } else if (delta > 0) {
+      if (this.fields[index].size < (this.fields[index].initMaxSize ? this.fields[index].initMaxSize : (totalSize - 1)) && this.fields[index + 1].size > (this.fields[index + 1].initMinSize ? this.fields[index + 1].initMinSize : 1)) {
+        console.log('[SplitView]', 'resizeViewItems - delta > 0', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
+        this.fields[index].size += delta;
+        if (this.fields[index + 1]) {
+          this.fields[index + 1].size -= delta;
+        } else {
+          if (this.direction === 'horizontal') {
+            this.fields[index - 1].size -= delta;
+          }
+        }
+      } else {
+        console.log('[SplitView]', 'resizeViewItems - delta > 0 - not satistied', index, delta, 'this.fields[index].size', this.fields[index].size, 'totalSize', totalSize, 'this.fields[index + 1].size', this.fields[index + 1].size, 'totalSizePlusOne', totalSizePlusOne)
+        this.fields[index].size += -1
+        if (this.fields[index + 1]) {
+          this.fields[index + 1].size -= -1;
+        } else {
+          if (this.direction === 'horizontal') {
+            this.fields[index - 1].size -= -1;
+          }
+        }
+      }
       }
       this.updateSashPositions();
     },
@@ -308,19 +393,19 @@ export default {
       }
     },
     startDrag(event, itemId) {
-      console.log('startDrag', itemId)
+      // console.log('startDrag', itemId)
       // 设置拖动的数据（只需要传递 item 的 id）
       event.dataTransfer.setData('text/plain', itemId);
     },
     dragOver(event, targetItemId) {
-      console.log('dragOver', event);
+      // console.log('dragOver', event);
       event.preventDefault();
 
       // 找到目标项的索引
       this.overId = this.fields.find(item => item.id === targetItemId).id;
     },
     drop(event, targetItemId) {
-      console.log('drop', targetItemId)
+      // console.log('drop', targetItemId)
       const sourceItemId = event.dataTransfer.getData('text/plain');
 
       // 找到源项和目标项的索引
@@ -344,21 +429,25 @@ export default {
     handleWindowResize() {
       // 获取新的窗口宽度和高度
       try {
-        const newWidth = this.$refs.container.clientWidth;
-        const newHeight = this.$refs.container.clientHeight;
+        const newWidth = this.$refs.container.clientWidth ? this.$refs.container.clientWidth : 0.001;
+        const newHeight = this.$refs.container.clientHeight ? this.$refs.container.clientHeight : 0.001;
 
         // 计算缩放比例
         const oldWidth = this.containerWidth;
         const oldHeight = this.containerHeight;
+
+        // console.log('[SplitView]', 'handleWindowResize', 'oldWidth', oldWidth, 'oldHeight', oldHeight, 'newWidth', newWidth, 'newHeight', newHeight)
 
         // 更新每个 viewItem 的 size
         this.fields.forEach((item) => {
           switch (this.direction) {
             case 'vertical':
               item.size = item.size * newHeight / oldHeight;
+              // console.log('[SplitView]', 'handleWindowResize-itemSize', 'item.size', item.size, 'vertical')
               break;
             case 'horizontal':
               item.size = item.size * newWidth / oldWidth;
+              // console.log('[SplitView]', 'handleWindowResize-itemSize', 'item.size', item.size, 'horizontal')
               break;
             default:
               break;

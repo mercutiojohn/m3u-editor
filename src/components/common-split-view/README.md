@@ -10,16 +10,13 @@ Built with Vue 2.
 
 # todos
 
-* [ ] 展开收起
-* [ ] 预设宽度/高度
+* [X] 展开收起
+* [X] 预设宽度/高度
+* [ ] 边界逻辑，边界判断
 * [ ] 持久化
 * [ ] 传参 / slot 切换
 * [ ] 可拖拽
 * [ ] 跨板块拖拽
-
-# SplitView Component
-
-The SplitView component is a Vue.js component that allows you to create a split view layout with resizable panels.
 
 ## Usage
 
@@ -49,6 +46,10 @@ import SplitView from 'split-view-component';
   </SplitView>
 </template>
 ```
+
+## Demo
+
+try the demo
 
 ## Props
 
