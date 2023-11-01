@@ -16,6 +16,7 @@
     "vite-svg-loader": "^4.0.0"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.0.15",
     "@vitejs/plugin-vue2-jsx": "^1.1.0",
     "element-ui": "^2.15.14",
     "jsoneditor": "^9.10.3",

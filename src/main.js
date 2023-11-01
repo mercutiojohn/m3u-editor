@@ -1,8 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-import './style.css'
+// Styles
+import '@/style.scss'
 import "@/assets/el-reset.scss"
+
+// Fonts
+import '@fontsource/inter'
 
 // Vuex
 import store from "@/store"
