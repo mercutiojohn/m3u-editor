@@ -53,7 +53,20 @@
           </grid-layout>
           </div>
         </div>
-        <div class="hello">123</div>
+        <div class="bottom-bar">
+          <div class="pane">
+          </div>
+          <div class="pane">
+            <template v-if="!settings.useAutoScale">
+              <el-slider style="width: 100px" v-model="settings.scale" :min="0.01" :max="2" :step="0.000001"></el-slider>
+            </template>
+            <!-- <template v-else>
+              <span>{{Math.floor(scale * 100) + '%'}}</span>
+            </template> -->
+            <el-button size="mini" :disabled="settings.useAutoScale" @click="settings.scale = 1">{{Math.floor(scale * 100) + '%'}}</el-button>
+            <el-checkbox v-model="settings.useAutoScale">自动缩放</el-checkbox>
+          </div>
+        </div>
       </split-view-item>
       <split-view-item show-header name="设置" init-size="400px">
         <el-tabs v-model="activeTabRight" type="card" class="card-reset size-mini ios my-tabs">
@@ -84,11 +97,6 @@
           <el-tab-pane style="height: 100%" label="面板设置" name="options">
             <split-view v-if="activeTabRight === 'options'" name="右边栏-面板设置">
               <split-view-item show-header name="面板设置">
-                <span>{{Math.floor(scale * 100) + '%'}}</span>
-                <el-checkbox v-model="settings.useAutoScale">auto</el-checkbox>
-                <div v-if="!settings.useAutoScale">
-                  <el-slider v-model="settings.scale" :min="0.01" :max="2" :step="0.000001"></el-slider><el-button @click="settings.scale = 1">100%</el-button>
-                </div>
                 <vue-json-editor
                   v-model="settings"
                   :showBtns="false"
@@ -157,7 +165,7 @@ export default {
       if (this.options.responsive) { // 响应式
         return '100%'
       } else if (this.settings.useAutoScale) { // 自动缩放
-        return this.options.resolution[1] + 'px'
+        return `calc(${this.options.resolution[1]}px)`
       } else { // 手动调整缩放
         return this.options.resolution[1] * this.scale + 'px'
       }
@@ -166,7 +174,8 @@ export default {
       if (this.options.responsive) { // 响应式
         return '100%'
       } else if (this.settings.useAutoScale) { // 自动缩放
-        return ''
+        return `calc(${this.options.resolution[0]}px)`
+        // return ''
       } else { // 手动调整缩放
         return this.options.resolution[0] * this.scale + 'px'
       }
@@ -196,8 +205,8 @@ export default {
     getScale() {
       const canvasFather = this.$refs.canvasFather
       const canvas = this.$refs.canvas
-      const width = canvasFather.clientWidth
-      const height = canvasFather.clientHeight
+      const width = canvasFather.clientWidth - this.fatherPadding
+      const height = canvasFather.clientHeight - this.fatherPadding
       const scaleX = width / this.options.resolution[0];
       const scaleY = height / this.options.resolution[1];
       console.log('[CanvasScale]','getScale', width, height, scaleX, scaleY)
@@ -215,6 +224,7 @@ export default {
   },
   data() {
     return {
+      fatherPadding: 20,
       autoScale: 1,
       settings: {
         useAutoScale: true,
@@ -320,10 +330,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+$father-padding: 20px;
+$bottom-bar-height: 30px;
+$border-color: #ccc;
 .canvasFather {
   background: rgba(0, 0, 0, 0.034);
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
+  width: calc(100% - ($father-padding * 2));
+  height: calc(100% - ($father-padding * 2) - $bottom-bar-height);
   overflow-x: auto;
   overflow-y: auto;
   /* display: flex; */
@@ -332,7 +345,22 @@ export default {
   padding: 20px;
 }
 .panel {
-  border-right: 1px solid #ccc;
+  border-right: 1px solid $border-color;
+}
+.bottom-bar {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  height: calc($bottom-bar-height - 1px);
+  border-top: 1px solid $border-color;
+  .pane {
+    // width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 }
 .view {
   width: 100%;
@@ -372,7 +400,7 @@ export default {
     overflow-y: scroll;
   }
   .col {
-    border-left: 1px solid #ccc;
+    border-left: 1px solid $border-color;
     flex-shrink: 0;
     width: 500px;
     height: 100%;
