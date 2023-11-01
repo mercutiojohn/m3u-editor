@@ -1,11 +1,66 @@
 <template>
   <div class="screen">
     <split-view direction="horizontal" class="view" name="编辑器" style="width: 100%">
-      <split-view-item show-header name="布局和组件" init-size="350px">
+      <!-- <split-view-item show-header name="布局和组件" init-size="350px">
         <el-tabs v-model="activeTabLeft" type="card" class="card-reset size-mini ios my-tabs">
-          <el-tab-pane style="height: 100%" label="页面布局" name="layout">      
-            <split-view v-if="activeTabLeft === 'layout'" direction="vertical" name="左边栏-页面布局">
-              <split-view-item name="页面布局">
+          
+        </el-tabs>
+      </split-view-item> -->
+      <split-view-item name="主界面">
+        <div class="canvasFather" ref="canvasFather">
+          <div class="canvas" ref="canvas" :style="{
+            height: height, 
+            width: width,
+            // transform: `scale(${settings.scale})`,
+            zoom: scale
+          }">
+          <grid-layout  
+            v-if="!loading"
+            :layout.sync="layout"
+            :col-num="options.colNum"
+            :row-height="options.rowHeight"
+            :margin="options.margin"
+            :is-mirrored="false"
+            :vertical-compact="false"
+            :prevent-collision="true"
+            :is-resizable="settings.editMode"
+            :is-draggable="settings.editMode"
+            :use-css-transforms="settings.useCssTransforms"
+            :responsive="options.responsive"
+            :cols="options.cols"
+            :is-bounded="true"
+          >
+            <grid-item
+              v-for="item in layout"
+              :x="item.x"
+              :y="item.y"
+              :w="item.w"
+              :h="item.h"
+              :i="item.i"
+              :key="item.id"
+              class="grid-item"
+              :style="gridItemStyles"
+            >
+              <div v-if="settings.devMode">
+                <p>id:{{ item.id }}</p>
+                <p>i:{{ item.i }}</p>
+                <p>x:{{ item.x }}</p>
+                <p>y:{{ item.y }}</p>
+                <p>h:{{ item.h }}</p>
+              </div>
+              <component :is="getComponent(item.id)"></component>
+            </grid-item>
+          </grid-layout>
+          </div>
+        </div>
+      </split-view-item>
+      <split-view-item show-header name="设置" init-size="400px">
+        <el-tabs v-model="activeTabRight" type="card" class="card-reset size-mini ios my-tabs">
+          <el-tab-pane label="组件设置" name="component">
+          </el-tab-pane>
+          <el-tab-pane style="height: 100%" label="页面组件" name="layout">      
+            <split-view v-if="activeTabRight === 'layout'" direction="vertical" name="左边栏-页面布局">
+              <split-view-item show-header name="页面布局">
                 <vue-json-editor
                   v-model="layout"
                   :showBtns="false"
@@ -14,11 +69,7 @@
                   :expandedOnStart="true"
                 />
               </split-view-item>
-            </split-view>
-          </el-tab-pane>
-          <el-tab-pane style="height: 100%" label="组件绑定" name="component">      
-            <split-view v-if="activeTabLeft === 'component'" direction="vertical" name="左边栏-组件绑定">
-              <split-view-item name="组件绑定">
+              <split-view-item show-header name="组件绑定">
                 <vue-json-editor
                   v-model="content"
                   :showBtns="false"
@@ -29,62 +80,14 @@
               </split-view-item>
             </split-view>
           </el-tab-pane>
-        </el-tabs>
-      </split-view-item>
-      <split-view-item name="主界面" ref="canvasFather">
-        <div class="canvas" ref="canvas" :style="{ 
-          width: options.resolution[0] + 'px', 
-          height: options.resolution[1] + 'px', 
-          transform: `scale(${settings.scale})`,
-          // zoom: settings.scale
-        }">
-        <grid-layout  
-          v-if="!loading"
-          :layout.sync="layout"
-          :col-num="options.colNum"
-          :row-height="options.rowHeight"
-          :margin="options.margin"
-          :is-mirrored="false"
-          :vertical-compact="options.verticalCompact"
-          :prevent-collision="settings.preventCollision"
-          :is-resizable="settings.editMode"
-          :is-draggable="settings.editMode"
-          :use-css-transforms="settings.useCssTransforms"
-          :responsive="options.responsive"
-          :cols="options.cols"
-        >
-          <grid-item
-            v-for="item in layout"
-            :x="item.x"
-            :y="item.y"
-            :w="item.w"
-            :h="item.h"
-            :i="item.i"
-            :key="item.id"
-            class="grid-item"
-            :style="gridItemStyles"
-          >
-            <div v-if="settings.devMode">
-              <p>id:{{ item.id }}</p>
-              <p>i:{{ item.i }}</p>
-              <p>x:{{ item.x }}</p>
-              <p>y:{{ item.y }}</p>
-              <p>h:{{ item.h }}</p>
-            </div>
-            <component :is="getComponent(item.id)"></component>
-          </grid-item>
-        </grid-layout>
-        </div>
-
-      </split-view-item>
-      <split-view-item show-header name="设置" init-size="400px">
-        <el-tabs v-model="activeTabRight" type="card" class="card-reset size-mini ios my-tabs">
-          <el-tab-pane label="组件设置" name="component">
-          </el-tab-pane>
           <el-tab-pane style="height: 100%" label="面板设置" name="options">
             <split-view v-if="activeTabRight === 'options'" name="右边栏-面板设置">
               <split-view-item show-header name="面板设置">
-                <el-slider v-model="settings.scale" :min="0.1" :max="2" :step="0.1"></el-slider>
+                <span>{{Math.floor(scale * 100) + '%'}}</span>
+                <el-checkbox v-model="settings.useAutoScale">auto</el-checkbox>
+                <div v-if="!settings.useAutoScale">
+                  <el-slider v-model="settings.scale" :min="0.01" :max="2" :step="0.000001"></el-slider><el-button @click="settings.scale = 1">100%</el-button>
+                </div>
                 <vue-json-editor
                   v-model="settings"
                   :showBtns="false"
@@ -140,6 +143,33 @@ export default {
     // MapBox,
   },
   computed: {
+    scale() {
+      if (this.options.responsive) { // 响应式
+        return 1
+      } else if (this.settings.useAutoScale) { // 自动缩放
+        return this.autoScale
+      } else { // 手动调整缩放
+        return this.settings.scale
+      }
+    },
+    height() {
+      if (this.options.responsive) { // 响应式
+        return '100%'
+      } else if (this.settings.useAutoScale) { // 自动缩放
+        return this.options.resolution[1] + 'px'
+      } else { // 手动调整缩放
+        return this.options.resolution[1] * this.scale + 'px'
+      }
+    },
+    width() {
+      if (this.options.responsive) { // 响应式
+        return '100%'
+      } else if (this.settings.useAutoScale) { // 自动缩放
+        return ''
+      } else { // 手动调整缩放
+        return this.options.resolution[0] * this.scale + 'px'
+      }
+    }
   },
   methods: {
     getComponent(id) {
@@ -155,6 +185,23 @@ export default {
       //   item.id === id
       // })[0].componentName
     },
+    setupCanvasScaleListener() {
+      const resizeObserver = new ResizeObserver(() => {
+        console.log('[CanvasScale]', 'Resizing')
+        this.getScale();
+      });
+      resizeObserver.observe(this.$refs.canvasFather);
+    },
+    getScale() {
+      const canvasFather = this.$refs.canvasFather
+      const canvas = this.$refs.canvas
+      const width = canvasFather.clientWidth
+      const height = canvasFather.clientHeight
+      const scaleX = width / this.options.resolution[0];
+      const scaleY = height / this.options.resolution[1];
+      console.log('[CanvasScale]','getScale', width, height, scaleX, scaleY)
+      this.autoScale = Math.min(scaleX, scaleY);
+    },
   },
   beforeCreate() {
     installComponents(Vue).then(() => {
@@ -162,47 +209,95 @@ export default {
     });
   },
   mounted() {
-    const canvasFather = this.$refs.canvasFather
-    const canvas = this.$refs.canvas
-
-    const resizeObserver = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        console.log(entry)
-        const { width, height } = entry.contentRect;
-        // const targetRatio = 1600 / 900;
-
-        const scaleX = width / 1600;
-        const scaleY = height / 900;
-        this.settings.scale = Math.min(scaleX, scaleY);
-      }
-    });
+    this.getScale()
+    this.setupCanvasScaleListener()
   },
   data() {
     return {
+      autoScale: 1,
       settings: {
+        useAutoScale: true,
         devMode: false,
         editMode: true,
-        useCssTransforms: true,
-        preventCollision: false,
+        useCssTransforms: false,
         scale: 1,
       },
       loading: true,
-      activeTabLeft: 'layout',
-      activeTabRight: 'component',
+      activeTabRight: 'options',
       activeCollapses: ['layout','content'],
       layout: [
-        { x: 0, y: 12, w: 12, h: 9, id: "0aebca", i: "0", moved: false },
-        { x: 0, y: 0, w: 12, h: 12, id: "9asd7g", i: "1", moved: false },
-        { x: 0, y: 27, w: 6, h: 6, id: "9ssf2d", i: "2", moved: false },
-        { x: 0, y: 21, w: 12, h: 6, id: "asd2ed", i: "3", moved: false },
-        { x: 6, y: 27, w: 6, h: 6, id: "lk19sf", i: "4", moved: false },
-      ],
+  {
+    "x": 3,
+    "y": 2,
+    "w": 6,
+    "h": 9,
+    "id": "0aebca",
+    "i": "0",
+    "moved": false
+  },
+  {
+    "x": 3,
+    "y": 11,
+    "w": 6,
+    "h": 6,
+    "id": "0aebcb",
+    "i": "99",
+    "moved": false
+  },
+  {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 2,
+    "id": "9asd7g",
+    "i": "1",
+    "moved": false
+  },
+  {
+    "x": 0,
+    "y": 8,
+    "w": 3,
+    "h": 9,
+    "id": "9ssf2d",
+    "i": "2",
+    "moved": false
+  },
+  {
+    "x": 0,
+    "y": 2,
+    "w": 3,
+    "h": 6,
+    "id": "asd2ed",
+    "i": "3",
+    "moved": false
+  },
+  {
+    "x": 9,
+    "y": 2,
+    "w": 3,
+    "h": 6,
+    "id": "lk19sf",
+    "i": "4",
+    "moved": false
+  },
+  {
+    "x": 9,
+    "y": 8,
+    "w": 3,
+    "h": 9,
+    "id": "lk19sv",
+    "i": "48",
+    "moved": false
+  }
+],
       content: [
         { id: "0aebca", type: "component", componentName: "Hello" },
+        { id: "0aebcb", type: "component", componentName: "Hello" },
         { id: "9asd7g", type: "component", componentName: "Bye" },
         { id: "9ssf2d", type: "component", componentName: "" },
         { id: "asd2ed", type: "component", componentName: "" },
         { id: "lk19sf", type: "component", componentName: "" },
+        { id: "lk19sv", type: "component", componentName: "" },
       ],
       gridItemStyles: {
         borderRadius: '10px',
@@ -213,7 +308,6 @@ export default {
       options: {
         colNum: 12,
         rowHeight: 30,
-        verticalCompact: false,
         margin: [20, 20],
         responsive: false,
         cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
@@ -225,6 +319,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.canvasFather {
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
+  margin: 20px;
+}
 .panel {
   border-right: 1px solid #ccc;
 }
