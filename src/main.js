@@ -7,6 +7,7 @@ import "@/assets/el-reset.scss"
 
 // Fonts
 import '@fontsource/inter'
+import '@fontsource-variable/noto-sans-sc'
 
 // Vuex
 import store from "@/store"

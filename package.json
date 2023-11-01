@@ -16,6 +16,7 @@
     "vite-svg-loader": "^4.0.0"
   },
   "dependencies": {
+    "@fontsource-variable/noto-sans-sc": "^5.0.3",
     "@fontsource/inter": "^5.0.15",
     "@vitejs/plugin-vue2-jsx": "^1.1.0",
     "element-ui": "^2.15.14",
