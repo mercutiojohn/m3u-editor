@@ -51,7 +51,7 @@ export default {
       parentWidth: 0,
       parentHeight: 0,
       parentTop: 0,
-      fontSize: 25
+      barHeight: 25
     };
   },
   provide() {
@@ -128,11 +128,11 @@ export default {
           const savedSize = field.savedSize
           field.savedSize = 0
           // console.log('saved size', field.savedSize, 'size add', (savedSize - 30))
-          this.resizeViewItems(index, (savedSize - this.fontSize))
+          this.resizeViewItems(index, (savedSize - this.barHeight))
         } else {
           field.savedSize = field.size
-          // console.log('size add', (0 - (field.size - this.fontSize)), 'size saved', field.savedSize)
-          this.resizeViewItems(index, (0 - (field.size - this.fontSize)))
+          // console.log('size add', (0 - (field.size - this.barHeight)), 'size saved', field.savedSize)
+          this.resizeViewItems(index, (0 - (field.size - this.barHeight)))
         }
       }
     });

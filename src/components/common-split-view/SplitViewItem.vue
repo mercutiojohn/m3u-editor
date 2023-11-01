@@ -142,7 +142,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$font-size: 25px;
+$bar-height: 25px;
 
 .split-view-item {
   display: flex;
@@ -166,7 +166,7 @@ $font-size: 25px;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: $font-size;
+    height: $bar-height;
     padding: 0 10px;
     box-sizing: border-box;
     border-bottom: 1px solid #ccc;
@@ -175,7 +175,7 @@ $font-size: 25px;
       border-bottom-color: transparent;
     } */
     .title {
-      line-height: $font-size;
+      line-height: $bar-height;
       font-size: .8em;
     }
     .expand-toggle {
@@ -188,7 +188,7 @@ $font-size: 25px;
     height: 100%;
     overflow: auto;
     &.show-header {
-      height: calc(100% - $font-size);
+      height: calc(100% - $bar-height);
     }
     &.hide {
       display: none;
@@ -196,8 +196,8 @@ $font-size: 25px;
   }
   .horizontal-folded {
     writing-mode: vertical-rl;
-    width: $font-size;
-    line-height: $font-size;
+    width: $bar-height;
+    line-height: $bar-height;
     height: 100%;
     display: flex;
     /* flex-direction: column; */
