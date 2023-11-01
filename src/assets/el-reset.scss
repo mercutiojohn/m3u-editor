@@ -63,3 +63,26 @@
     }
   }
 }
+.nav-reset.el-menu--horizontal {
+  display: flex;
+  align-items: center;
+  padding-left: 10px !important;
+  gap: 7px;
+  .el-menu-item {
+    // transition: none;
+    padding: 0 15px;
+    line-height: 30px !important;
+    height: 30px !important;
+    border-radius: 7px !important;
+    border: none !important;
+    &:not(.is-disabled):hover {
+      background: #00000018;
+    }
+    &.is-active,
+    &:not(.is-disabled):focus {
+      background: #00000024;
+    }
+    // display: none;
+    
+  }
+}

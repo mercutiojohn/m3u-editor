@@ -14,6 +14,12 @@ dependencies:
   jsoneditor:
     specifier: ^9.10.3
     version: 9.10.3
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
+  lodash-es:
+    specifier: ^4.17.21
+    version: 4.17.21
   osp-vue-json-editor:
     specifier: ^1.4.3
     version: 1.4.3
@@ -25,7 +31,7 @@ dependencies:
     version: 1.69.3
   vite-plugin-vue2:
     specifier: ^2.0.3
-    version: 2.0.3(vite@4.4.5)(vue-template-compiler@2.7.14)(vue@2.7.14)
+    version: 2.0.3(lodash@4.17.21)(vite@4.4.5)(vue-template-compiler@2.7.14)(vue@2.7.14)
   vue:
     specifier: ^2.7.14
     version: 2.7.14
@@ -911,6 +917,7 @@ packages:
 
   /@interactjs/types@1.10.2:
     resolution: {integrity: sha512-l0T1bU8OHRv716ztQOYwP+K7b/lA76C0T3r/cdabbUv6CKeAFdFRRFlmNxYOM36SxMGWAiq5VWrN3SeXlB7Fow==}
+    requiresBuild: true
     dev: false
 
   /@interactjs/utils@1.10.2:
@@ -1186,10 +1193,10 @@ packages:
       '@vue/shared': 3.3.6
     dev: true
 
-  /@vue/component-compiler-utils@3.3.0:
+  /@vue/component-compiler-utils@3.3.0(lodash@4.17.21):
     resolution: {integrity: sha512-97sfH2mYNU+2PzGrmK2haqffDpVASuib9/w2/noxiFi31Z54hW+q3izKQXXQZSNhtiUpAI36uSuYepeBe4wpHQ==}
     dependencies:
-      consolidate: 0.15.1
+      consolidate: 0.15.1(lodash@4.17.21)
       hash-sum: 1.0.2
       lru-cache: 4.1.5
       merge-source-map: 1.1.0
@@ -1409,7 +1416,7 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /consolidate@0.15.1:
+  /consolidate@0.15.1(lodash@4.17.21):
     resolution: {integrity: sha512-DW46nrsMJgy9kqAbPt5rKaCr7uFtpo4mSUvLHIUbJEjm0vo+aY5QLwBUq3FK4tRnJr/X0Psc0C4jf/h+HtXSMw==}
     engines: {node: '>= 0.10.0'}
     deprecated: Please upgrade to consolidate v1.0.0+ as it has been modernized with several long-awaited fixes implemented. Maintenance is supported by Forward Email at https://forwardemail.net ; follow/watch https://github.com/ladjs/consolidate for updates and release changelog
@@ -1576,9 +1583,10 @@ packages:
         optional: true
     dependencies:
       bluebird: 3.7.2
+      lodash: 4.17.21
     dev: false
 
-  /consolidate@0.16.0:
+  /consolidate@0.16.0(lodash@4.17.21):
     resolution: {integrity: sha512-Nhl1wzCslqXYTJVDyJCu3ODohy9OfBMB5uD2BiBTzd7w+QY0lBzafkR8y8755yMYHAaMD4NuzbAw03/xzfw+eQ==}
     engines: {node: '>= 0.10.0'}
     deprecated: Please upgrade to consolidate v1.0.0+ as it has been modernized with several long-awaited fixes implemented. Maintenance is supported by Forward Email at https://forwardemail.net ; follow/watch https://github.com/ladjs/consolidate for updates and release changelog
@@ -1745,6 +1753,7 @@ packages:
         optional: true
     dependencies:
       bluebird: 3.7.2
+      lodash: 4.17.21
     dev: false
 
   /convert-source-map@2.0.0:
@@ -2116,8 +2125,16 @@ packages:
     engines: {node: '>=14'}
     dev: true
 
+  /lodash-es@4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
   /lodash.kebabcase@4.1.1:
     resolution: {integrity: sha512-N8XRTIMMqqDgSy4VLKPnJ/+hpGZN+PHQiJnSenYqPaVV/NCqEogTnAdZLQiGKhxX+JCs8waWq2t1XHWKOmlY8g==}
+    dev: false
+
+  /lodash@4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /lru-cache@4.1.5:
@@ -2496,7 +2513,7 @@ packages:
       '@sphinxxxx/color-conversion': 2.2.2
     dev: false
 
-  /vite-plugin-vue2@2.0.3(vite@4.4.5)(vue-template-compiler@2.7.14)(vue@2.7.14):
+  /vite-plugin-vue2@2.0.3(lodash@4.17.21)(vite@4.4.5)(vue-template-compiler@2.7.14)(vue@2.7.14):
     resolution: {integrity: sha512-t3Tu93GWsMHbpeIv66MTO5e/rRAo8/+/eWoUtFYuAdKDMyEnn1dqsrXh+CfG+SJAlxJvcTP8U0eXkzhLjKNyMg==}
     peerDependencies:
       vite: ^2.0.0 || ^3.0.0 || ^4.0.0
@@ -2519,8 +2536,8 @@ packages:
       '@rollup/pluginutils': 4.2.1
       '@vue/babel-helper-vue-jsx-merge-props': 1.4.0
       '@vue/babel-preset-jsx': 1.4.0(@babel/core@7.23.2)(vue@2.7.14)
-      '@vue/component-compiler-utils': 3.3.0
-      consolidate: 0.16.0
+      '@vue/component-compiler-utils': 3.3.0(lodash@4.17.21)
+      consolidate: 0.16.0(lodash@4.17.21)
       debug: 4.3.4
       fs-extra: 10.1.0
       hash-sum: 2.0.0

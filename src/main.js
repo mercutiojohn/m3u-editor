@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 
 import './style.css'
+import "@/assets/el-reset.scss"
 
 // Vuex
 import store from "@/store"

@@ -19,6 +19,8 @@
     "@vitejs/plugin-vue2-jsx": "^1.1.0",
     "element-ui": "^2.15.14",
     "jsoneditor": "^9.10.3",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "osp-vue-json-editor": "^1.4.3",
     "radix-vue": "^0.4.1",
     "sass": "^1.69.3",

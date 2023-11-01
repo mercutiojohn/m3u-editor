@@ -1,27 +1,6 @@
 <template>
   <div class="about">
-    <SplitView direction="horizontal" class="view">
-      <SplitViewItem>
-        <SplitView direction="vertical">
-          <SplitViewItem>111</SplitViewItem>
-          <SplitViewItem>2222</SplitViewItem>
-          <SplitViewItem>2222</SplitViewItem>
-          <SplitViewItem>2222</SplitViewItem>
-          <SplitViewItem>2222</SplitViewItem>
-        </SplitView>
-      </SplitViewItem>
-      <SplitViewItem>2</SplitViewItem>
-      <SplitViewItem>3</SplitViewItem>
-      <SplitViewItem init-size="500px">
-        <SplitView direction="vertical">
-          <SplitViewItem>111</SplitViewItem>
-          <SplitViewItem>2222</SplitViewItem>
-          <SplitViewItem>2222</SplitViewItem>
-          <SplitViewItem>2222</SplitViewItem>
-          <SplitViewItem>2222</SplitViewItem>
-        </SplitView>
-      </SplitViewItem>
-    </SplitView>
+    Hi there
    </div>
 </template>
 
