@@ -3,11 +3,11 @@ import App from './App.vue'
 
 // Styles
 import '@/style.scss'
-import "@/assets/el-reset.scss"
 
 // Fonts
 import '@fontsource/inter'
 import '@fontsource-variable/noto-sans-sc'
+import '@fontsource-variable/fira-code'
 
 // Vuex
 import store from "@/store"

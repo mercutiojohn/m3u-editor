@@ -1,0 +1,9 @@
+.jsoneditor-popover, .jsoneditor-schema-error, div.jsoneditor td, div.jsoneditor textarea, div.jsoneditor th, div.jsoneditor-field, div.jsoneditor-value, pre.jsoneditor-preview,
+.jsoneditor-field {
+  font-family: $font-family-monospace !important;
+}
+.jsoneditor-contextmenu .jsoneditor-menu button,
+.jsoneditor-menu>.jsoneditor-modes>button, .jsoneditor-menu>button,
+.jsoneditor-navigation-bar {
+  font-family: $font-family-sans !important;
+}
