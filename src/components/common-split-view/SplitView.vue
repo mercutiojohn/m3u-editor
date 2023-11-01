@@ -50,7 +50,8 @@ export default {
       fields: [],
       parentWidth: 0,
       parentHeight: 0,
-      parentTop: 0
+      parentTop: 0,
+      fontSize: 25
     };
   },
   provide() {
@@ -127,11 +128,11 @@ export default {
           const savedSize = field.savedSize
           field.savedSize = 0
           // console.log('saved size', field.savedSize, 'size add', (savedSize - 30))
-          this.resizeViewItems(index, (savedSize - 30))
+          this.resizeViewItems(index, (savedSize - this.fontSize))
         } else {
           field.savedSize = field.size
-          // console.log('size add', (0 - (field.size - 30)), 'size saved', field.savedSize)
-          this.resizeViewItems(index, (0 - (field.size - 30)))
+          // console.log('size add', (0 - (field.size - this.fontSize)), 'size saved', field.savedSize)
+          this.resizeViewItems(index, (0 - (field.size - this.fontSize)))
         }
       }
     });

@@ -53,6 +53,7 @@
           </grid-layout>
           </div>
         </div>
+        <div class="hello">123</div>
       </split-view-item>
       <split-view-item show-header name="设置" init-size="400px">
         <el-tabs v-model="activeTabRight" type="card" class="card-reset size-mini ios my-tabs">

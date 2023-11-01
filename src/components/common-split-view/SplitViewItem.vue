@@ -142,6 +142,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$font-size: 25px;
+
 .split-view-item {
   display: flex;
   flex-direction: column;
@@ -164,7 +166,7 @@ export default {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    height: 30px;
+    height: $font-size;
     padding: 0 10px;
     box-sizing: border-box;
     border-bottom: 1px solid #ccc;
@@ -173,7 +175,8 @@ export default {
       border-bottom-color: transparent;
     } */
     .title {
-      line-height: 30px;
+      line-height: $font-size;
+      font-size: .8em;
     }
     .expand-toggle {
       &:hover {
@@ -185,7 +188,7 @@ export default {
     height: 100%;
     overflow: auto;
     &.show-header {
-      height: calc(100% - 30px);
+      height: calc(100% - $font-size);
     }
     &.hide {
       display: none;
@@ -193,8 +196,8 @@ export default {
   }
   .horizontal-folded {
     writing-mode: vertical-rl;
-    width: 30px;
-    line-height: 30px;
+    width: $font-size;
+    line-height: $font-size;
     height: 100%;
     display: flex;
     /* flex-direction: column; */
