@@ -301,7 +301,7 @@ export default {
       ],
       gridItemStyles: {
         borderRadius: '10px',
-        boxShadow: '0 5px 20px -2px #00000038',
+        // boxShadow: '0 5px 20px -2px #00000038',
         border: '1px solid #00000033',
         background: '#fff'
       },
@@ -320,12 +320,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 .canvasFather {
+  background: rgba(0, 0, 0, 0.034);
   width: calc(100% - 40px);
   height: calc(100% - 40px);
+  overflow-x: auto;
+  overflow-y: auto;
   /* display: flex; */
   /* align-items: center; */
   /* justify-content: center; */
-  margin: 20px;
+  padding: 20px;
 }
 .panel {
   border-right: 1px solid #ccc;
@@ -350,8 +353,12 @@ export default {
   overflow: hidden;
 }
 .canvas {
+  border-radius: 2px;
+  box-shadow: 0 5px 20px -2px #00000038;
+  border: 1px solid #00000033;
+  background: #fff;
   z-index: -1;
-  background: #0000003e;
+  background: #fff;
   overflow: auto;
 }
 .screen {
