@@ -242,8 +242,8 @@ export default {
     getScale() {
       const canvasFather = this.$refs.canvasFather;
       const canvas = this.$refs.canvas;
-      const width = canvasFather.clientWidth - this.fatherPadding;
-      const height = canvasFather.clientHeight - this.fatherPadding;
+      const width = canvasFather.clientWidth - this.fatherPadding * 2;
+      const height = canvasFather.clientHeight - this.fatherPadding * 2;
       const scaleX = width / this.options.resolution[0];
       const scaleY = height / this.options.resolution[1];
       console.log("[CanvasScale]", "getScale", width, height, scaleX, scaleY);
