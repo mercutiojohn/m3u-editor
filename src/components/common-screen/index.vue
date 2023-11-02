@@ -1,6 +1,11 @@
 <template>
   <div class="screen">
-    <split-view direction="horizontal" class="view" name="编辑器" style="width: 100%">
+    <split-view
+      direction="horizontal"
+      class="view"
+      name="编辑器"
+      style="width: 100%"
+    >
       <!-- <split-view-item show-header name="布局和组件" init-size="350px">
         <el-tabs v-model="activeTabLeft" type="card" class="card-reset size-mini ios my-tabs">
           
@@ -8,72 +13,93 @@
       </split-view-item> -->
       <split-view-item name="主界面">
         <div class="canvasFather" ref="canvasFather">
-          <div class="canvas" ref="canvas" :style="{
-            height: height, 
-            width: width,
-            // transform: `scale(${settings.scale})`,
-            zoom: scale
-          }">
-          <grid-layout  
-            v-if="!loading"
-            :layout.sync="layout"
-            :col-num="options.colNum"
-            :row-height="options.rowHeight"
-            :margin="options.margin"
-            :is-mirrored="false"
-            :vertical-compact="false"
-            :prevent-collision="true"
-            :is-resizable="settings.editMode"
-            :is-draggable="settings.editMode"
-            :use-css-transforms="settings.useCssTransforms"
-            :responsive="options.responsive"
-            :cols="options.cols"
-            :is-bounded="true"
+          <div
+            class="canvas"
+            ref="canvas"
+            :style="{
+              height: height,
+              width: width,
+              // transform: `scale(${settings.scale})`,
+              zoom: scale,
+            }"
           >
-            <grid-item
-              v-for="item in layout"
-              :x="item.x"
-              :y="item.y"
-              :w="item.w"
-              :h="item.h"
-              :i="item.i"
-              :key="item.id"
-              class="grid-item"
-              :style="gridItemStyles"
+            <grid-layout
+              v-if="!loading"
+              :layout.sync="layout"
+              :col-num="options.colNum"
+              :row-height="options.rowHeight"
+              :margin="options.margin"
+              :is-mirrored="false"
+              :vertical-compact="false"
+              :prevent-collision="true"
+              :is-resizable="settings.editMode"
+              :is-draggable="settings.editMode"
+              :use-css-transforms="settings.useCssTransforms"
+              :responsive="options.responsive"
+              :cols="options.cols"
+              :is-bounded="true"
             >
-              <div v-if="settings.devMode">
-                <p>id:{{ item.id }}</p>
-                <p>i:{{ item.i }}</p>
-                <p>x:{{ item.x }}</p>
-                <p>y:{{ item.y }}</p>
-                <p>h:{{ item.h }}</p>
-              </div>
-              <component :is="getComponent(item.id)"></component>
-            </grid-item>
-          </grid-layout>
+              <grid-item
+                v-for="item in layout"
+                :x="item.x"
+                :y="item.y"
+                :w="item.w"
+                :h="item.h"
+                :i="item.i"
+                :key="item.id"
+                class="grid-item"
+                :style="gridItemStyles"
+              >
+                <div v-if="settings.devMode">
+                  <p>id:{{ item.id }}</p>
+                  <p>i:{{ item.i }}</p>
+                  <p>x:{{ item.x }}</p>
+                  <p>y:{{ item.y }}</p>
+                  <p>h:{{ item.h }}</p>
+                </div>
+                <component :is="getComponent(item.id)"></component>
+              </grid-item>
+            </grid-layout>
           </div>
         </div>
         <div class="bottom-bar">
-          <div class="pane">
-          </div>
+          <div class="pane"></div>
           <div class="pane">
             <template v-if="!settings.useAutoScale">
-              <el-slider style="width: 100px" v-model="settings.scale" :min="0.01" :max="2" :step="0.000001"></el-slider>
+              <el-slider
+                style="width: 100px"
+                v-model="settings.scale"
+                :min="0.01"
+                :max="2"
+                :step="0.000001"
+              ></el-slider>
             </template>
             <!-- <template v-else>
               <span>{{Math.floor(scale * 100) + '%'}}</span>
             </template> -->
-            <el-button size="mini" :disabled="settings.useAutoScale" @click="settings.scale = 1">{{Math.floor(scale * 100) + '%'}}</el-button>
+            <el-button
+              size="mini"
+              :disabled="settings.useAutoScale"
+              @click="settings.scale = 1"
+              >{{ Math.floor(scale * 100) + "%" }}</el-button
+            >
             <el-checkbox v-model="settings.useAutoScale">自动缩放</el-checkbox>
           </div>
         </div>
       </split-view-item>
       <split-view-item show-header name="设置" init-size="400px">
-        <el-tabs v-model="activeTabRight" type="card" class="card-reset size-mini ios my-tabs">
-          <el-tab-pane label="组件设置" name="component">
-          </el-tab-pane>
-          <el-tab-pane style="height: 100%" label="页面组件" name="layout">      
-            <split-view v-if="activeTabRight === 'layout'" direction="vertical" name="左边栏-页面布局">
+        <el-tabs
+          v-model="activeTabRight"
+          type="card"
+          class="card-reset size-mini ios my-tabs"
+        >
+          <el-tab-pane label="组件设置" name="component"> </el-tab-pane>
+          <el-tab-pane style="height: 100%" label="页面组件" name="layout">
+            <split-view
+              v-if="activeTabRight === 'layout'"
+              direction="vertical"
+              name="左边栏-页面布局"
+            >
               <split-view-item show-header name="页面布局">
                 <vue-json-editor
                   v-model="layout"
@@ -95,7 +121,10 @@
             </split-view>
           </el-tab-pane>
           <el-tab-pane style="height: 100%" label="面板设置" name="options">
-            <split-view v-if="activeTabRight === 'options'" name="右边栏-面板设置">
+            <split-view
+              v-if="activeTabRight === 'options'"
+              name="右边栏-面板设置"
+            >
               <split-view-item show-header name="面板设置">
                 <vue-json-editor
                   v-model="settings"
@@ -124,7 +153,6 @@
                 />
               </split-view-item>
             </split-view>
-            
           </el-tab-pane>
         </el-tabs>
       </split-view-item>
@@ -148,38 +176,47 @@ export default {
     GridItem: VueGridLayout.GridItem,
     VueJsonEditor,
     SplitView,
-    SplitViewItem
+    SplitViewItem,
     // MapBox,
   },
   computed: {
     scale() {
-      if (this.options.responsive) { // 响应式
-        return 1
-      } else if (this.settings.useAutoScale) { // 自动缩放
-        return this.autoScale
-      } else { // 手动调整缩放
-        return this.settings.scale
+      if (this.options.responsive) {
+        // 响应式
+        return 1;
+      } else if (this.settings.useAutoScale) {
+        // 自动缩放
+        return this.autoScale;
+      } else {
+        // 手动调整缩放
+        return this.settings.scale;
       }
     },
     height() {
-      if (this.options.responsive) { // 响应式
-        return '100%'
-      } else if (this.settings.useAutoScale) { // 自动缩放
-        return `calc(${this.options.resolution[1]}px)`
-      } else { // 手动调整缩放
-        return this.options.resolution[1] * this.scale + 'px'
+      if (this.options.responsive) {
+        // 响应式
+        return "100%";
+      } else if (this.settings.useAutoScale) {
+        // 自动缩放
+        return `calc(${this.options.resolution[1]}px)`;
+      } else {
+        // 手动调整缩放
+        return this.options.resolution[1] * this.scale + "px";
       }
     },
     width() {
-      if (this.options.responsive) { // 响应式
-        return '100%'
-      } else if (this.settings.useAutoScale) { // 自动缩放
-        return `calc(${this.options.resolution[0]}px)`
+      if (this.options.responsive) {
+        // 响应式
+        return "100%";
+      } else if (this.settings.useAutoScale) {
+        // 自动缩放
+        return `calc(${this.options.resolution[0]}px)`;
         // return ''
-      } else { // 手动调整缩放
-        return this.options.resolution[0] * this.scale + 'px'
+      } else {
+        // 手动调整缩放
+        return this.options.resolution[0] * this.scale + "px";
       }
-    }
+    },
   },
   methods: {
     getComponent(id) {
@@ -197,19 +234,19 @@ export default {
     },
     setupCanvasScaleListener() {
       const resizeObserver = new ResizeObserver(() => {
-        console.log('[CanvasScale]', 'Resizing')
+        console.log("[CanvasScale]", "Resizing");
         this.getScale();
       });
       resizeObserver.observe(this.$refs.canvasFather);
     },
     getScale() {
-      const canvasFather = this.$refs.canvasFather
-      const canvas = this.$refs.canvas
-      const width = canvasFather.clientWidth - this.fatherPadding
-      const height = canvasFather.clientHeight - this.fatherPadding
+      const canvasFather = this.$refs.canvasFather;
+      const canvas = this.$refs.canvas;
+      const width = canvasFather.clientWidth - this.fatherPadding;
+      const height = canvasFather.clientHeight - this.fatherPadding;
       const scaleX = width / this.options.resolution[0];
       const scaleY = height / this.options.resolution[1];
-      console.log('[CanvasScale]','getScale', width, height, scaleX, scaleY)
+      console.log("[CanvasScale]", "getScale", width, height, scaleX, scaleY);
       this.autoScale = Math.min(scaleX, scaleY);
     },
   },
@@ -219,8 +256,8 @@ export default {
     });
   },
   mounted() {
-    this.getScale()
-    this.setupCanvasScaleListener()
+    this.getScale();
+    this.setupCanvasScaleListener();
   },
   data() {
     return {
@@ -234,73 +271,73 @@ export default {
         scale: 1,
       },
       loading: true,
-      activeTabRight: 'options',
-      activeCollapses: ['layout','content'],
+      activeTabRight: "options",
+      activeCollapses: ["layout", "content"],
       layout: [
-  {
-    "x": 3,
-    "y": 2,
-    "w": 6,
-    "h": 9,
-    "id": "0aebca",
-    "i": "0",
-    "moved": false
-  },
-  {
-    "x": 3,
-    "y": 11,
-    "w": 6,
-    "h": 6,
-    "id": "0aebcb",
-    "i": "99",
-    "moved": false
-  },
-  {
-    "x": 0,
-    "y": 0,
-    "w": 12,
-    "h": 2,
-    "id": "9asd7g",
-    "i": "1",
-    "moved": false
-  },
-  {
-    "x": 0,
-    "y": 8,
-    "w": 3,
-    "h": 9,
-    "id": "9ssf2d",
-    "i": "2",
-    "moved": false
-  },
-  {
-    "x": 0,
-    "y": 2,
-    "w": 3,
-    "h": 6,
-    "id": "asd2ed",
-    "i": "3",
-    "moved": false
-  },
-  {
-    "x": 9,
-    "y": 2,
-    "w": 3,
-    "h": 6,
-    "id": "lk19sf",
-    "i": "4",
-    "moved": false
-  },
-  {
-    "x": 9,
-    "y": 8,
-    "w": 3,
-    "h": 9,
-    "id": "lk19sv",
-    "i": "48",
-    "moved": false
-  }
-],
+        {
+          x: 3,
+          y: 2,
+          w: 6,
+          h: 9,
+          id: "0aebca",
+          i: "0",
+          moved: false,
+        },
+        {
+          x: 3,
+          y: 11,
+          w: 6,
+          h: 6,
+          id: "0aebcb",
+          i: "99",
+          moved: false,
+        },
+        {
+          x: 0,
+          y: 0,
+          w: 12,
+          h: 2,
+          id: "9asd7g",
+          i: "1",
+          moved: false,
+        },
+        {
+          x: 0,
+          y: 8,
+          w: 3,
+          h: 9,
+          id: "9ssf2d",
+          i: "2",
+          moved: false,
+        },
+        {
+          x: 0,
+          y: 2,
+          w: 3,
+          h: 6,
+          id: "asd2ed",
+          i: "3",
+          moved: false,
+        },
+        {
+          x: 9,
+          y: 2,
+          w: 3,
+          h: 6,
+          id: "lk19sf",
+          i: "4",
+          moved: false,
+        },
+        {
+          x: 9,
+          y: 8,
+          w: 3,
+          h: 9,
+          id: "lk19sv",
+          i: "48",
+          moved: false,
+        },
+      ],
       content: [
         { id: "0aebca", type: "component", componentName: "Hello" },
         { id: "0aebcb", type: "component", componentName: "Hello" },
@@ -311,10 +348,10 @@ export default {
         { id: "lk19sv", type: "component", componentName: "" },
       ],
       gridItemStyles: {
-        borderRadius: '10px',
+        borderRadius: "10px",
         // boxShadow: '0 5px 20px -2px #00000038',
-        border: '1px solid #00000033',
-        background: '#fff'
+        border: "1px solid #00000033",
+        background: "#fff",
       },
       options: {
         colNum: 12,
@@ -322,8 +359,8 @@ export default {
         margin: [20, 20],
         responsive: false,
         cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
-        // 
-        resolution: [1600, 900]
+        //
+        resolution: [1600, 900],
       },
     };
   },
@@ -369,13 +406,15 @@ $border-color: #ccc;
   height: 100%;
   display: flex;
   flex-direction: column;
-  ::v-deep{ .el-tabs__header {
-    padding: 10px;
-    /* padding-top: 0; */
+  ::v-deep {
+    .el-tabs__header {
+      padding: 10px;
+      /* padding-top: 0; */
+    }
+    .el-tabs__content {
+      height: 100%;
+    }
   }
-  .el-tabs__content {
-    height: 100%;
-  }}
 }
 .grid-item {
   border: 1px solid #000;
@@ -420,7 +459,7 @@ $border-color: #ccc;
 ::v-deep {
   .jsoneditor-vue-outer {
     height: 100%;
-    .jsoneditor-vue{
+    .jsoneditor-vue {
       height: 100%;
       .jsoneditor {
         border: none;
