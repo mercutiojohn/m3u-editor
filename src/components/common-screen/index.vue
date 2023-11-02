@@ -7,7 +7,7 @@
       style="width: 100%"
     >
       <!-- <split-view-item show-header name="布局和组件" init-size="350px">
-        <el-tabs v-model="activeTabLeft" type="card" class="card-reset size-mini ios my-tabs">
+        <el-tabs v-model="activeTabLeft" type="card" class="tab-reset size-mini ios my-tabs">
           
         </el-tabs>
       </split-view-item> -->
@@ -63,21 +63,30 @@
           </div>
         </div>
         <div class="bottom-bar">
-          <div class="pane"></div>
+          <div class="pane">
+            <span v-if="!options.autoAdjust">{{options.resolution[0]}}×{{options.resolution[1]}}</span>
+            <el-radio-group v-model="view" disabled size="mini">
+              <el-radio-button label="预览"></el-radio-button>
+              <el-radio-button label="代码"></el-radio-button>
+            </el-radio-group>
+          </div>
           <div class="pane">
             <template v-if="!settings.useAutoScale">
               <el-slider
-                style="width: 100px"
+                style="width: 100px;"
+                :show-tooltip="false"
                 v-model="settings.scale"
                 :min="0.01"
                 :max="2"
                 :step="0.000001"
+                input-size="mini"
               ></el-slider>
             </template>
             <!-- <template v-else>
               <span>{{Math.floor(scale * 100) + '%'}}</span>
             </template> -->
             <el-button
+              class="button-reset ghost"
               size="mini"
               :disabled="settings.useAutoScale"
               @click="settings.scale = 1"
@@ -91,7 +100,7 @@
         <el-tabs
           v-model="activeTabRight"
           type="card"
-          class="card-reset size-mini ios my-tabs"
+          class="tab-reset size-mini ios my-tabs"
         >
           <el-tab-pane label="组件设置" name="component"> </el-tab-pane>
           <el-tab-pane style="height: 100%" label="页面组件" name="layout">
@@ -181,7 +190,7 @@ export default {
   },
   computed: {
     scale() {
-      if (this.options.responsive) {
+      if (this.options.autoAdjust) {
         // 响应式
         return 1;
       } else if (this.settings.useAutoScale) {
@@ -193,7 +202,7 @@ export default {
       }
     },
     height() {
-      if (this.options.responsive) {
+      if (this.options.autoAdjust) {
         // 响应式
         return "100%";
       } else if (this.settings.useAutoScale) {
@@ -205,7 +214,7 @@ export default {
       }
     },
     width() {
-      if (this.options.responsive) {
+      if (this.options.autoAdjust) {
         // 响应式
         return "100%";
       } else if (this.settings.useAutoScale) {
@@ -242,8 +251,8 @@ export default {
     getScale() {
       const canvasFather = this.$refs.canvasFather;
       const canvas = this.$refs.canvas;
-      const width = canvasFather.clientWidth - this.fatherPadding * 2;
-      const height = canvasFather.clientHeight - this.fatherPadding * 2;
+      const width = canvasFather.clientWidth - this.fatherPadding * 2 - 2;
+      const height = canvasFather.clientHeight - this.fatherPadding * 2 - 2;
       const scaleX = width / this.options.resolution[0];
       const scaleY = height / this.options.resolution[1];
       console.log("[CanvasScale]", "getScale", width, height, scaleX, scaleY);
@@ -358,6 +367,7 @@ export default {
         rowHeight: 30,
         margin: [20, 20],
         responsive: false,
+        autoAdjust: false,
         cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
         //
         resolution: [1600, 900],

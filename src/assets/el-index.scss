@@ -1,5 +1,8 @@
+// 颜色变量
 @import "./el-variables.scss";
 
-@import "./el-reset.scss";
-
+// Element UI Chalk 主题
 @import "element-ui/packages/theme-chalk/src/index.scss";
+
+// 样式 Override
+@import "./el-reset.scss";

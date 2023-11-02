@@ -174,7 +174,7 @@ export default {
           width: 160,
           showOverflowTooltip: true,
           render: (h, scope) => {
-            return h('span', parseTime(scope.row.createTime, '{y}-{m}-{d}'))
+            return h('span', parseTime(scope.row.date, '{y}-{m}-{d}'))
           }
         },
         {

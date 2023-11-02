@@ -1,6 +1,6 @@
 <template>
   <div class="crud">
-    <SplitView direction="horizontal" class="view">
+    <SplitView direction="vertical" class="view">
       <SplitViewItem>
         <div class="playground pane">
           <div class="content">
@@ -26,7 +26,7 @@
         </div>
       </SplitViewItem>
       <SplitViewItem init-size="500px">
-        <SplitView direction="vertical">
+        <SplitView direction="horizontal">
           <SplitViewItem name="tableOptions" show-header>
             <vue-json-editor
               v-model="tableOptions"

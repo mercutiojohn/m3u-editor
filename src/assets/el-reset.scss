@@ -1,4 +1,4 @@
-.card-reset {
+.tab-reset {
   .el-tabs__header {
     border-bottom: none!important;
     margin-bottom: 0;
@@ -84,5 +84,19 @@
     }
     // display: none;
     
+  }
+}
+button.el-button.button-reset {
+  &.ghost {
+    border: none;
+    &:not(.is-disabled):hover {
+      background: #00000018;
+      color: unset;
+    }
+    &.is-active,
+    &:not(.is-disabled):focus {
+      background: #00000024;
+      color: unset;
+    }
   }
 }
