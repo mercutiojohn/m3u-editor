@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column prop="name" label="频道名"></el-table-column>
       <el-table-column prop="platform" label="平台" :formatter="genericFormatter"></el-table-column>
-      <el-table-column prop="category" label="分类"></el-table-column>
+      <el-table-column prop="groupTitle" label="分类"></el-table-column>
       <el-table-column prop="url" label="URL"></el-table-column>
       <!-- <el-table-column type="expand">
         <template slot-scope="props">
@@ -48,7 +48,7 @@
               <el-input v-model="props.row.name"></el-input>
             </el-form-item>
             <el-form-item label="分类">
-              <el-input v-model="props.row.category"></el-input>
+              <el-input v-model="props.row.groupTitle"></el-input>
             </el-form-item>
           </el-form>
         </template>
@@ -62,7 +62,6 @@
     </el-table>
     <el-button @click="addNewChannel">添加新频道</el-button>
     <!-- <el-button @click="generateM3U" v-if="channels.length">生成 M3U</el-button> -->
-    <el-button @click="downloadM3U" v-if="m3uContent">下载 M3U</el-button>
     <div v-if="autoM3uContent">
       <el-input
         type="textarea"
@@ -71,6 +70,7 @@
         readonly
       ></el-input>
       <el-button @click="copyToClipboard">复制到剪贴板</el-button>
+      <el-button @click="downloadM3U">下载 M3U</el-button>
     </div>
     <el-dialog title="编辑频道" :visible.sync="isEditDialogVisible">
       <el-form :model="dialogEditingChannel" label-width="120px">
@@ -93,7 +93,7 @@
           <el-input v-model="dialogEditingChannel.name"></el-input>
         </el-form-item>
         <el-form-item label="分类">
-          <el-input v-model="dialogEditingChannel.category"></el-input>
+          <el-input v-model="dialogEditingChannel.groupTitle"></el-input>
         </el-form-item>
       </el-form>
       <div v-if="autoM3UItem">
@@ -123,7 +123,14 @@ export default {
         uid: '',
         logo: '',
         name: '',
-        category: ''
+        groupTitle: '',
+        url: '',
+        tvgId: '',
+        tvgName: '',
+        country: '',
+        language: '',
+        tvgShift: '',
+        epgUrl: ''
       },
       platforms: [
         {name: '斗鱼', key: 'douyu', platformFeatures: 'useId'},
@@ -131,8 +138,9 @@ export default {
         {name: '虎牙', key: 'huya', platformFeatures: 'useId'},
         {name: 'YY', key: 'yy', platformFeatures: 'useId'},
         {name: '抖音', key: 'douyin', platformFeatures: 'useId'},
+        {name: 'YouTube', key: 'youtube', platformFeatures: 'useId'},
       ],
-      useIdPlatforms: ['douyu', 'bilibili', 'huya', 'yy', 'douyin'],
+      useIdPlatforms: ['douyu', 'bilibili', 'huya', 'yy', 'douyin', 'youtube'],
       fullUrlPlatforms: [],
       channels: [],
       options: {
@@ -152,6 +160,14 @@ export default {
       return this.generateM3UItemPreview()
     }
   },
+  watch: {
+    options: {
+      handler(newVal, oldVaal) {
+        this.setLocalStorageItem('m3u-options', newVal)
+      },
+      deep: true
+    }
+  },
   methods: {
     async handleM3UUpload(event) {
       const file = event.target.files[0];
@@ -166,53 +182,100 @@ export default {
 
       reader.readAsText(file);
     },
-    // parseM3UContent(content) {
-    //   const lines = content.split("\n");
-    //   const channels = [];
-
-    //   for (let i = 0; i < lines.length; i++) {
-    //     if (lines[i].startsWith("#EXTINF:")) {
-    //         const nextLine = lines[i + 1];
-    //         if (nextLine) {
-    //             const logoMatch = lines[i].match(/tvg-logo="([^"]+)"/);
-    //             const groupNameMatch = lines[i].match(/group-name="([^"]+)"/);
-    //             // const nameMatch = lines[i].match(/,(.+)$/);
-    //             const nameMatch = lines[i].match(/\,(.+)$/);
-    //             console.log(nameMatch)
-    //             channels.push({
-    //                 logo: logoMatch ? logoMatch[1] : '',
-    //                 name: nameMatch ? nameMatch[1] : '',
-    //                 url: nextLine.trim(),
-    //                 platform: 'custom',
-    //                 category: groupNameMatch ? groupNameMatch[1] : ''
-    //             });
-    //             i++; // 跳过下一行，因为我们已经读取了它
-    //         }
-    //     }
-    //   }
-
-    //   this.channels = channels;
-    //   this.saveM3UChannels();
-    // },
     parseM3UContent(content) {
-        const channels = [];
-        // 定义一个正则表达式，它匹配所有需要的部分
-        // const regex = /#EXTINF:.*?tvg-logo="([^"]+)?".*?group-title="([^"]+)?".*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g;
-        const regex = /#EXTINF:.*?(?:tvg-logo="([^"]+)")?.*?(?:group-title="([^"]+)")?.*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g;
-        let match;
-        while ((match = regex.exec(content)) !== null) {
+      const lines = content.split("\n");
+      const channels = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i]
+        if (line.startsWith("#EXTINF:")) {
+          const nextLine = lines[i + 1];
+          if (nextLine) {
+            console.log(nextLine.trim())
+            // const logoMatch = line.match(/tvg-logo="([^"]+)"/);
+            const logoMatch = this.extractValue(line, 'tvg-logo');
+            // const nameMatch = line.match(/,(.+)$/);
+            // const nameMatch = line.match(/\,(.+)$/);
+            // const nameMatch = line.match(/#EXTINF:.*?tvg-logo="([^"]+)?".*?group-title="([^"]+)?".*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g);
+            // const nameMatch = (line.match(/,(.*)$/) || [,''])[1].trim();
+            let a = line.split(',')
+            a.splice(0, 1);
+            console.log(a.join(','))
+            const nameMatch = a.join(',').trim();
+            const tvgIdMatch = this.extractValue(line, 'tvg-id');
+            const groupTitleMatch = this.extractValue(line, 'group-title');
+            const tvgNameMatch = this.extractValue(line, 'tvg-name');
+            const countryMatch = this.extractValue(line, 'tvg-country');
+            const languageMatch = this.extractValue(line, 'tvg-language');
+            const tvgShiftMatch = this.extractValue(line, 'tvg-shift');
+            const epgUrlMatch = this.extractValue(line, 'tvg-url');
+            const platformMatch = this.getUrlInfo(nextLine).platform
+            const platformKey = this.platforms.find(p => p.key === platformMatch);
+            const uidMatch = this.getUrlInfo(nextLine).uid
+
+            console.log(this.getUrlInfo(nextLine).platform, platformKey?.key)
+
             channels.push({
-                logo: match[1] ? match[1] : '',
-                name: match[3] ? match[3].trim() : '',
-                url: match[4] ? match[4].trim() : '',
-                platform: 'custom',
-                category: match[2] ? match[2] : '',
-                uid: ''
+                logo: logoMatch,
+                name: nameMatch,
+                url: nextLine.trim(),
+                platform: platformKey?.key || 'custom',
+                uid: uidMatch,
+                groupTitle: groupTitleMatch,
+                tvgId: tvgIdMatch,
+                tvgName: tvgNameMatch,
+                country: countryMatch,
+                language: languageMatch,
+                tvgShift: tvgShiftMatch,
+                epgUrl: epgUrlMatch
             });
+            i++; // 跳过下一行，因为我们已经读取了它
+          }
         }
-        this.channels = channels;
-        this.saveM3UChannels();
+      }
+
+      this.channels = channels;
+      this.saveM3UChannels();
     },
+    getUrlInfo(content) {
+      const regex = /(http[s]?:\/\/[^:]+:35455\/([^\/]+)\/([^\/\?]+))/g;
+      let match = regex.exec(content);
+      // console.log('【match】', match)
+      let res = {}
+      if (match !== null) {
+        // console.log('【match】', match)
+        res.platform = match[2];
+        res.uid = match[3];
+      } else {
+        res.platform = 'custom'
+        res.uid = ''
+      }
+      return res
+    },
+    extractValue(line, attribute) {
+      const regex = new RegExp(`${attribute}="([^"]*)"`);
+      const match = line.match(regex);
+      return match ? match[1] : '';
+    },
+    // parseM3UContent(content) {
+    //     const channels = [];
+    //     // 定义一个正则表达式，它匹配所有需要的部分
+    //     const regex = /#EXTINF:.*?tvg-logo="([^"]+)?".*?group-title="([^"]+)?".*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g;
+    //     const regex = /#EXTINF:.*?(?:tvg-logo="([^"]+)")?.*?(?:group-title="([^"]+)")?.*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g;
+    //     let match;
+    //     while ((match = regex.exec(content)) !== null) {
+    //         channels.push({
+    //             logo: match[1] ? match[1] : '',
+    //             name: match[3] ? match[3].trim() : '',
+    //             url: match[4] ? match[4].trim() : '',
+    //             platform: 'custom',
+    //             groupTitle: match[2] ? match[2] : '',
+    //             uid: ''
+    //         });
+    //     }
+    //     this.channels = channels;
+    //     this.saveM3UChannels();
+    // },
     genericFormatter(row, column, cellValue) {
       const platform = this.platforms.find(p => p.key === cellValue);
       return platform ? platform.name : cellValue;
@@ -242,7 +305,7 @@ export default {
               break;
           }
         }
-        content += `#EXTINF:-1 tvg-logo="${channel.logo || '<logo>'}" group-title="${channel.category || '<category>'}",${channel.name || '<name>'}\n${url || '<url>'}\n`
+        content += `#EXTINF:-1 tvg-logo="${channel.logo || '<logo>'}" group-title="${channel.groupTitle || '<groupTitle>'}",${channel.name || '<name>'}\n${channel.url || '<url>'}\n`
       }
       return content
     },
@@ -261,7 +324,7 @@ export default {
             break;
         }
       }
-      return `#EXTINF:-1 tvg-logo="${channel.logo || '<logo>'}" group-title="${channel.category || '<category>'}",${channel.name || '<name>'}\n${url || '<url>'}`
+      return `#EXTINF:-1 tvg-logo="${channel.logo || '<logo>'}" group-title="${channel.groupTitle || '<groupTitle>'}",${channel.name || '<name>'}\n${channel.url || '<url>'}`
     },
     updateM3U() {
       this.m3uContent = this.generateM3U();
@@ -316,6 +379,9 @@ export default {
   mounted() {
     this.getLocalStorageItemIfExists('m3u-channels',(res) => {
       this.channels = res
+    })
+    this.getLocalStorageItemIfExists('m3u-options',(res) => {
+      this.options = res
     })
   }
 };
