@@ -88,15 +88,34 @@
 }
 button.el-button.button-reset {
   &.ghost {
-    border: none;
-    &:not(.is-disabled):hover {
-      background: #00000018;
-      color: unset;
+    &.el-button--default {
+      background: transparent;
+      border: none;
+      &:not(.is-disabled):hover {
+        background: #00000018;
+        color: unset;
+      }
+      &.is-active,
+      &:not(.is-disabled):focus {
+        background: #00000024;
+        color: unset;
+      }
     }
-    &.is-active,
-    &:not(.is-disabled):focus {
-      background: #00000024;
-      color: unset;
+    &.el-button--danger {
+      background: transparent;
+      color: $--color-danger;
+      border: none;
+      &:not(.is-disabled):hover {
+        color: $--color-danger;
+        background: $--color-danger-lighter;
+        // color: unset;
+      }
+      &.is-active,
+      &:not(.is-disabled):focus {
+        color: $--color-danger;
+        background: $--color-danger-light;
+        // color: unset;
+      }
     }
   }
 }

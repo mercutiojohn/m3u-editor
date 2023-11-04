@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <el-menu :default-active="$route.path" :router="true" class="nav nav-reset" mode="horizontal" @select="handleSelect">
+    <el-menu :default-active="$route.path" :router="true" class="nav nav-reset" mode="horizontal">
       <el-menu-item index="/">Home</el-menu-item>
       <el-menu-item index="/panel">Panel</el-menu-item>
       <el-menu-item index="/crud">Crud</el-menu-item>
       <el-menu-item index="/grid">Grid</el-menu-item>
+      <el-menu-item index="/generate-m3u">GenerateM3U</el-menu-item>
       <el-menu-item index="/about">About</el-menu-item>
     </el-menu>
      <!-- <nav>

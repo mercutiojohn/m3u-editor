@@ -18,12 +18,17 @@ const routes = [
   {
     path: '/crud',
     name: 'Crud',
-    component: () => import('@/views/Crud.vue')
+    component: () => import('@/views/Crud/index.vue')
   },
   {
     path: '/grid',
     name: 'Grid',
     component: () => import('@/views/Grid.vue')
+  },
+  {
+    path: '/generate-m3u',
+    name: 'GenerateM3U',
+    component: () => import('@/views/GenerateM3U/index.vue')
   },
   {
     path: '/about',

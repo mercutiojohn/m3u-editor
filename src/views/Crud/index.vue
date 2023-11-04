@@ -17,11 +17,10 @@
             >
               <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="150">
                 <template slot-scope="scope">
-                  <CrudActions :row="scope.row" :table-data="tableData" :actions="actions" :show-action-status="showActionStatus" :show-action-status-table="showActionStatusTable" status-prop="curstate" :table-status-prop="tableType" use-status />
+                  <CrudActions :row="scope.row" :table-data="tableData" :actions="actions" :action-row-status="actionRowStatus" :action-page-status="actionPageStatus" status-prop="currentState" :page-type-prop="tableType" use-status />
                 </template>
               </el-table-column>
             </Crud>
-            {{ b }}
           </div>
         </div>
       </SplitViewItem>
@@ -63,18 +62,18 @@
               :expandedOnStart="true"
             />
           </SplitViewItem>
-          <SplitViewItem name="showActionStatus" show-header>
+          <SplitViewItem name="actionRowStatus" show-header>
             <vue-json-editor
-              v-model="showActionStatus"
+              v-model="actionRowStatus"
               :showBtns="false"
               :mode="'tree'"
               lang="zh"
               :expandedOnStart="true"
             />
           </SplitViewItem>
-          <SplitViewItem name="showActionStatusTable" show-header>
+          <SplitViewItem name="actionPageStatus" show-header>
             <vue-json-editor
-              v-model="showActionStatusTable"
+              v-model="actionPageStatus"
               :showBtns="false"
               :mode="'tree'"
               lang="zh"
@@ -89,7 +88,7 @@
 
 <script>
 import VueJsonEditor from "@/components/json-editor/index.vue";
-import mixinTableProperties from '@/components/common-crud/mixins/data.js'
+import tableProperties from './mixins/tableProperties.js'
 import SplitView from "@/components/common-split-view/SplitView.vue";
 import SplitViewItem from "@/components/common-split-view/SplitViewItem.vue";
 
@@ -98,16 +97,24 @@ export default {
   props: {
     msg: String,
   },
-  mixins: [mixinTableProperties],
+  mixins: [tableProperties],
   components: {
     VueJsonEditor,
     SplitView,
     SplitViewItem
   },
+  methods: {
+    currentStateFormatter(a, b, c) {
+      console.log(a, b, c)
+      return c
+    },
+    handleSelectionChange(a) {
+      console.log(a)
+    }
+  },
   data() {
     return {
-      a: '{"a": 1}',
-      b: undefined,
+      loading: false,
       tableType: 'submit',
       // tableOptions: {
       //   maxHeight: "600px",
@@ -119,197 +126,147 @@ export default {
           date: "2016-05-02",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1518 弄",
-          curstate: '00'
+          currentState: 'draft'
         },
         {
           date: "2016-05-04",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1517 弄",
-          curstate: '01'
+          currentState: 'submitted'
         },
         {
           date: "2016-05-01",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1519 弄",
-          curstate: '02'
+          currentState: 'handled'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '03'
+          currentState: 'settled'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '05'
+          currentState: 'confirmed'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '06'
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '07'
+          currentState: 'rejected'
         },
         {
           date: "2016-05-02",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1518 弄",
-          curstate: '00'
+          currentState: 'draft'
         },
         {
           date: "2016-05-04",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1517 弄",
-          curstate: '01'
+          currentState: 'submitted'
         },
         {
           date: "2016-05-01",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1519 弄",
-          curstate: '02'
+          currentState: 'handled'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '03'
+          currentState: 'settled'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '05'
+          currentState: 'confirmed'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '06'
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '07'
+          currentState: 'rejected'
         },
         {
           date: "2016-05-02",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1518 弄",
-          curstate: '00'
+          currentState: 'draft'
         },
         {
           date: "2016-05-04",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1517 弄",
-          curstate: '01'
+          currentState: 'submitted'
         },
         {
           date: "2016-05-01",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1519 弄",
-          curstate: '02'
+          currentState: 'handled'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '03'
+          currentState: 'settled'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '05'
+          currentState: 'confirmed'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '06'
+          currentState: 'rejected'
+        },
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+          currentState: 'draft'
+        },
+        {
+          date: "2016-05-04",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1517 弄",
+          currentState: 'submitted'
+        },
+        {
+          date: "2016-05-01",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1519 弄",
+          currentState: 'handled'
         },
         {
           date: "2016-05-03",
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄",
-          curstate: '07'
+          currentState: 'settled'
+        },
+        {
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1516 弄",
+          currentState: 'confirmed'
+        },
+        {
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1516 弄",
+          currentState: 'rejected'
         },
       ],
-      // columns: [
-      //   // 多选列
-      //   {
-      //     type: "selection",
-      //     width: 60,
-      //   },
-      //   // 序号列
-      //   {
-      //     type: "index",
-      //     label: "序号",
-      //     width: 80,
-      //   },
-      //   // 其他列
-      //   {
-      //     label: "日期",
-      //     prop: "date",
-      //   },
-      //   {
-      //     label: "姓名",
-      //     prop: "name",
-      //   },
-      //   {
-      //     label: "地址",
-      //     prop: "address",
-      //   },
-      //   // 操作列按钮
-      //   {
-      //     label: "操作",
-      //     fixed: "right", // 固定在右侧
-      //     width: 100,
-      //     render: (h, params) => {
-      //       return h("div", [
-      //         h(
-      //           "el-button",
-      //           {
-      //             props: {
-      //               type: "text",
-      //               size: "mini",
-      //             },
-      //             on: {
-      //               click: () => {
-      //                 // 处理按钮点击事件
-      //                 this.handleAction(params.row);
-      //               },
-      //             },
-      //           },
-      //           "编辑"
-      //         ),
-      //         h(
-      //           "el-button",
-      //           {
-      //             props: {
-      //               type: "text",
-      //               size: "mini",
-      //             },
-      //             on: {
-      //               click: () => {
-      //                 // 处理按钮点击事件
-      //                 this.handleAction(params.row);
-      //               },
-      //             },
-      //           },
-      //           "删除"
-      //         ),
-      //       ]);
-      //     },
-      //   },
-      // ],
     };
   },
 };

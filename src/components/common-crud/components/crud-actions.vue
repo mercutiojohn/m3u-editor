@@ -1,6 +1,6 @@
 <script>
 export default {
-  // props: ['tableData', 'row', 'actions', 'options', 'useStatus', 'showActionStatus', 'statusProp'],
+  // props: ['tableData', 'row', 'actions', 'options', 'useStatus', 'actionRowStatus', 'statusProp'],
   props: {
     tableData: {
       type: Array,
@@ -22,7 +22,7 @@ export default {
       type: Boolean,
       default: false
     },
-    showActionStatus: {
+    actionRowStatus: {
       type: Object,
       default: () => {}
     },
@@ -30,11 +30,11 @@ export default {
       type: String,
       default: ''
     },
-    showActionStatusTable: {
+    actionPageStatus: {
       type: Object,
       default: () => {}
     },
-    tableStatusProp: {
+    pageTypeProp: {
       type: String,
       default: ''
     }
@@ -44,7 +44,7 @@ export default {
       'div',
       { },
       this.actions.map(item => {
-        const isNotNull = this.statusProp && this.row[this.statusProp] && item.show && this.showActionStatus && this.showActionStatus[item.show] && this.showActionStatusTable 
+        const isNotNull = this.statusProp && this.row[this.statusProp] && item.show && this.actionRowStatus && this.actionRowStatus[item.show] && this.actionPageStatus 
         const getStatusResult = (value, includeStr) => {
           if (typeof value === 'boolean') {
             return value
@@ -54,7 +54,7 @@ export default {
             return false
           }
         }
-        const includes = getStatusResult(this.showActionStatus[item.show], this.row[this.statusProp]) && getStatusResult(this.showActionStatusTable[item.show], this.tableStatusProp)
+        const includes = getStatusResult(this.actionRowStatus[item.show], this.row[this.statusProp]) && getStatusResult(this.actionPageStatus[item.show], this.pageTypeProp)
         if (!this.useStatus || (isNotNull && includes)) {
           return h('el-button', {
             props: item.props,
