@@ -36,7 +36,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="UID" v-if="useIdPlatforms.includes(props.row.platform)">
-              <el-input v-model="props.row.id"></el-input>
+              <el-input v-model="props.row.uid"></el-input>
             </el-form-item>
             <el-form-item label="URL" v-if="['custom'].includes(props.row.platform)">
               <el-input v-model="props.row.url"></el-input>
@@ -81,7 +81,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="UID" v-if="useIdPlatforms.includes(dialogEditingChannel.platform)">
-          <el-input v-model="dialogEditingChannel.id"></el-input>
+          <el-input v-model="dialogEditingChannel.uid"></el-input>
         </el-form-item>
         <el-form-item label="URL" v-if="[...fullUrlPlatforms, 'custom'].includes(dialogEditingChannel.platform)">
           <el-input v-model="dialogEditingChannel.url"></el-input>
@@ -120,7 +120,7 @@ export default {
     return {
       channelTemplate: {
         platform: '',
-        id: '',
+        uid: '',
         logo: '',
         name: '',
         category: ''
@@ -166,11 +166,39 @@ export default {
 
       reader.readAsText(file);
     },
+    // parseM3UContent(content) {
+    //   const lines = content.split("\n");
+    //   const channels = [];
+
+    //   for (let i = 0; i < lines.length; i++) {
+    //     if (lines[i].startsWith("#EXTINF:")) {
+    //         const nextLine = lines[i + 1];
+    //         if (nextLine) {
+    //             const logoMatch = lines[i].match(/tvg-logo="([^"]+)"/);
+    //             const groupNameMatch = lines[i].match(/group-name="([^"]+)"/);
+    //             // const nameMatch = lines[i].match(/,(.+)$/);
+    //             const nameMatch = lines[i].match(/\,(.+)$/);
+    //             console.log(nameMatch)
+    //             channels.push({
+    //                 logo: logoMatch ? logoMatch[1] : '',
+    //                 name: nameMatch ? nameMatch[1] : '',
+    //                 url: nextLine.trim(),
+    //                 platform: 'custom',
+    //                 category: groupNameMatch ? groupNameMatch[1] : ''
+    //             });
+    //             i++; // 跳过下一行，因为我们已经读取了它
+    //         }
+    //     }
+    //   }
+
+    //   this.channels = channels;
+    //   this.saveM3UChannels();
+    // },
     parseM3UContent(content) {
         const channels = [];
         // 定义一个正则表达式，它匹配所有需要的部分
-        const regex = /#EXTINF:.*?tvg-logo="([^"]+)?".*?group-title="([^"]+)?".*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g;
-
+        // const regex = /#EXTINF:.*?tvg-logo="([^"]+)?".*?group-title="([^"]+)?".*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g;
+        const regex = /#EXTINF:.*?(?:tvg-logo="([^"]+)")?.*?(?:group-title="([^"]+)")?.*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g;
         let match;
         while ((match = regex.exec(content)) !== null) {
             channels.push({
@@ -178,7 +206,8 @@ export default {
                 name: match[3] ? match[3].trim() : '',
                 url: match[4] ? match[4].trim() : '',
                 platform: 'custom',
-                category: match[2] ? match[2] : ''
+                category: match[2] ? match[2] : '',
+                uid: ''
             });
         }
         this.channels = channels;
@@ -201,7 +230,7 @@ export default {
       for (const channel of channels) {
         let url = '';
         if (useIdPlatforms.includes(channel.platform)) {
-          url = `http://${options.ip || '<ip>'}:35455/${channel.platform}/${channel.id || '<id>'}`
+          url = `http://${options.ip || '<ip>'}:35455/${channel.platform}/${channel.uid || '<uid>'}`
           channel.url = url
         } else {
           switch (channel.platform) {
@@ -220,7 +249,7 @@ export default {
     generateM3UItemPreview(channel = this.dialogEditingChannel, useIdPlatforms = this.useIdPlatforms, options = this.options) {
       let url = '';
       if (useIdPlatforms.includes(channel.platform)) {
-        url = `http://${options.ip || '<ip>'}:35455/${channel.platform}/${channel.id || '<id>'}`
+        url = `http://${options.ip || '<ip>'}:35455/${channel.platform}/${channel.uid || '<uid>'}`
         channel.url = url
       } else {
         switch (channel.platform) {
