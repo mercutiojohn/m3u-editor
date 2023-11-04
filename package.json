@@ -32,6 +32,7 @@
     "@fontsource-variable/noto-sans-sc": "^5.0.3",
     "@fontsource/inter": "^5.0.15",
     "@vitejs/plugin-vue2-jsx": "^1.1.0",
+    "axios": "^1.6.0",
     "element-ui": "^2.15.14",
     "jsoneditor": "^9.10.3",
     "lodash": "^4.17.21",

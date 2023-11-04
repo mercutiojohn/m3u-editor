@@ -1,5 +1,13 @@
 <template>
   <div> 
+    <el-button>
+        <label for="m3u-upload">
+          导入 M3U 文件
+          <input type="file" id="m3u-upload" @change="handleM3UUpload" style="display: none;" accept=".m3u"/>
+        </label>
+    </el-button>
+    <el-button @click="addNewChannel">添加新频道</el-button>
+
     <el-form :model="options" label-width="120px">
       <el-form-item label="自定义 IP">
         <el-input v-model="options.ip"></el-input>
@@ -53,32 +61,6 @@
       </el-table-column>
     </el-table>
     <el-button @click="addNewChannel">添加新频道</el-button>
-    <!-- <div v-for="(channel, index) in channels" :key="index">
-      <el-form :model="channel" label-width="120px">
-        <el-form-item label="平台">
-          <el-select v-model="channel.platform" placeholder="请选择平台">
-            <el-option v-for="(platform, idx) in platforms" :label="platform.name" :value="platform.key" :key="idx"></el-option>
-            <el-option label="自定义" value="custom"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="UID" v-if="useIdPlatforms.includes(channel.platform)">
-          <el-input v-model="channel.id"></el-input>
-        </el-form-item>
-        <el-form-item label="URL" v-if="['custom'].includes(channel.platform)">
-          <el-input v-model="channel.url"></el-input>
-        </el-form-item>
-        <el-form-item label="Logo URL">
-          <el-input v-model="channel.logo"></el-input>
-        </el-form-item>
-        <el-form-item label="频道名">
-          <el-input v-model="channel.name"></el-input>
-        </el-form-item>
-        <el-form-item label="分类">
-          <el-input v-model="channel.category"></el-input>
-        </el-form-item>
-      </el-form>
-      <el-button @click="removeChannel(index)">删除此频道</el-button>
-    </div> -->
     <!-- <el-button @click="generateM3U" v-if="channels.length">生成 M3U</el-button> -->
     <el-button @click="downloadM3U" v-if="m3uContent">下载 M3U</el-button>
     <div v-if="autoM3uContent">
@@ -132,6 +114,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -170,6 +153,37 @@ export default {
     }
   },
   methods: {
+    async handleM3UUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const content = e.target.result;
+        this.parseM3UContent(content);
+      };
+
+      reader.readAsText(file);
+    },
+    parseM3UContent(content) {
+        const channels = [];
+        // 定义一个正则表达式，它匹配所有需要的部分
+        const regex = /#EXTINF:.*?tvg-logo="([^"]+)?".*?group-title="([^"]+)?".*?,(.*?)\s*\n(https?:\/\/[^\s]+)/g;
+
+        let match;
+        while ((match = regex.exec(content)) !== null) {
+            channels.push({
+                logo: match[1] ? match[1] : '',
+                name: match[3] ? match[3].trim() : '',
+                url: match[4] ? match[4].trim() : '',
+                platform: 'custom',
+                category: match[2] ? match[2] : ''
+            });
+        }
+        this.channels = channels;
+        this.saveM3UChannels();
+    },
     genericFormatter(row, column, cellValue) {
       const platform = this.platforms.find(p => p.key === cellValue);
       return platform ? platform.name : cellValue;
@@ -199,7 +213,7 @@ export default {
               break;
           }
         }
-        content += `#EXTINF:-1 tvg-logo="${channel.logo || '<logo>'}",${channel.name || '<name>'}\n${url || '<url>'}\n`
+        content += `#EXTINF:-1 tvg-logo="${channel.logo || '<logo>'}" group-title="${channel.category || '<category>'}",${channel.name || '<name>'}\n${url || '<url>'}\n`
       }
       return content
     },
@@ -218,7 +232,7 @@ export default {
             break;
         }
       }
-      return `#EXTINF:-1 tvg-logo="${channel.logo || '<logo>'}",${channel.name || '<name>'}\n${url || '<url>'}`
+      return `#EXTINF:-1 tvg-logo="${channel.logo || '<logo>'}" group-title="${channel.category || '<category>'}",${channel.name || '<name>'}\n${url || '<url>'}`
     },
     updateM3U() {
       this.m3uContent = this.generateM3U();
