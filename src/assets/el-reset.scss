@@ -119,3 +119,10 @@ button.el-button.button-reset {
     }
   }
 }
+.form-item-reset {
+  &.full-height {
+    .el-textarea__inner {
+      height: 100%
+    }
+  }
+}

@@ -31,6 +31,11 @@ const routes = [
     component: () => import('@/views/GenerateM3U/index.vue')
   },
   {
+    path: '/ical-to-epg',
+    name: 'iCalToEPG',
+    component: () => import('@/views/iCalToEPG/index.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('@/views/About.vue')

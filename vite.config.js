@@ -1,5 +1,6 @@
 import vue from '@vitejs/plugin-vue2'
 import vueJsx from '@vitejs/plugin-vue2-jsx'
+import UnoCSS from 'unocss/vite'
 // import svgLoader from 'vite-svg-loader';
 // https://github.com/jpkleemans/vite-svg-loader/issues/76
 import { createSvgPlugin as svgLoader } from "@kingyue/vite-plugin-vue2-svg";
@@ -13,7 +14,8 @@ export default {
     vueJsx({
       // options are passed on to @vue/babel-preset-jsx
     }),
-    svgLoader()
+    svgLoader(),
+    UnoCSS(),
     // Component({
     //   dts: true,
     //   resolvers: [

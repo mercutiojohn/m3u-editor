@@ -3,6 +3,10 @@ import App from './App.vue'
 
 // Styles
 import '@/style.scss'
+import 'virtual:uno.css'
+
+import 'uno.css'
+import 'virtual:unocss-devtools'
 
 // Fonts
 import '@fontsource/inter'

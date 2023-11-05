@@ -6,6 +6,7 @@
       <el-menu-item index="/crud">Crud</el-menu-item>
       <el-menu-item index="/grid">Grid</el-menu-item>
       <el-menu-item index="/generate-m3u">GenerateM3U</el-menu-item>
+      <el-menu-item index="/ical-to-epg">iCalToEPG</el-menu-item>
       <el-menu-item index="/about">About</el-menu-item>
     </el-menu>
      <!-- <nav>
@@ -51,6 +52,7 @@ export default {
   border-bottom: 1px solid #ccc;
 } */
 .nav {
+  flex-shrink: 0;
   /* flex-shrink: 0; */
   height: 60px;
   box-sizing: border-box;
