@@ -87,6 +87,11 @@
   }
 }
 button.el-button.button-reset {
+  &.slim {
+    &.el-button--mini {
+      padding: 7px 7px;
+    }
+  }
   &.ghost {
     &.el-button--default {
       background: transparent;
