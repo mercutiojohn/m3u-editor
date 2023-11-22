@@ -240,11 +240,11 @@ export default {
       propertiesActiveTab: 'edit',
       // 配置页面
       tabs: [
-        { "label": "字段配置", "name": "edit" },
-        { "label": "表格配置", "name": "tableUtils" },
-        { "label": "表单配置", "name": "formUtils" },
-        { "label": "角色配置", "name": "roleUtils" },
-        { "label": "实时预览", "name": "preview" }
+        { "label": "元数据", "name": "edit" },
+        { "label": "表格", "name": "tableUtils" },
+        { "label": "表单", "name": "formUtils" },
+        { "label": "角色", "name": "roleUtils" },
+        { "label": "预览", "name": "preview" }
       ],
       // 核心数据
       coreData: JSON.parse(localStorage.getItem('coreData')) || coreDataInit,

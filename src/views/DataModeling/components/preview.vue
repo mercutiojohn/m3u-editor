@@ -58,6 +58,7 @@
       <el-tab-pane label="Mapper XML 预览">
         <pre>{{ mapperXmlPreview }}</pre>
       </el-tab-pane>
+      
       <el-tab-pane label="前端代码预览">
         <pre>{{ generatedCode }}</pre>
       </el-tab-pane>
