@@ -120,6 +120,36 @@
                       />
                     </div>
                   </el-tab-pane>
+                  <el-tab-pane label="查询条件配置" name="searchUtils">
+                    <div style="display: flex; gap: 10px">
+                      <div style="width: 100%">
+                        <!-- <el-form-item label="名称">
+                          <el-input v-model="props.row.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="字段名">
+                          <el-input v-model="props.row.field"></el-input>
+                        </el-form-item>
+                        <el-form-item label="数据类型">
+                          <el-select v-model="props.row.type" placeholder="请选择">
+                            <el-option
+                            v-for="item in dataTypes"
+                            :key="item.typeName"
+                            :label="item.typeLabel"
+                            :value="item.typeName">
+                            </el-option>
+                          </el-select>
+                        </el-form-item> -->
+                      </div>
+                      <vue-json-editor
+                        style="width: 500px; flex-shrink: 0"
+                        v-model="props.row.searchProperties"
+                        :showBtns="false"
+                        :mode="'tree'"
+                        lang="zh"
+                        :expandedOnStart="true"
+                      />
+                    </div>
+                  </el-tab-pane>
                   <el-tab-pane label="角色配置" name="roleUtils">
                     <div style="display: flex; gap: 10px">
                       <div style="width: 100%">
@@ -174,6 +204,7 @@
     </div>
     <preview :coreData="coreData" v-if="activeTab === 'preview'"/>
     <table-settings :coreData="coreData" v-if="activeTab === 'tableUtils'"/>
+    <form-settings :coreData="coreData" v-if="activeTab === 'formUtils'"/>
   </div>
 </template>
 
@@ -189,6 +220,7 @@ import tableActions from './mixins/tableActions'
 // 标签页
 import Preview from './components/preview.vue'
 import TableSettings from './components/tableSettings.vue'
+import FormSettings from './components/formSettings.vue'
 
 export default {
   name: 'FieldConfigurator',
@@ -197,7 +229,8 @@ export default {
     VueJsonEditor,
     // 标签页
     Preview,
-    TableSettings
+    TableSettings,
+    FormSettings
   },
   mixins: [tableActions],
   data() {
