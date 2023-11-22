@@ -46,6 +46,11 @@ const routes = [
     component: () => import('@/views/EditiCal/index.vue')
   },
   {
+    path: '/data-modeling',
+    name: 'DataModeling',
+    component: () => import('@/views/DataModeling/index.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('@/views/About.vue')
