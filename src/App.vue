@@ -7,6 +7,8 @@
       <el-menu-item index="/grid">Grid</el-menu-item>
       <el-menu-item index="/generate-m3u">GenerateM3U</el-menu-item>
       <el-menu-item index="/ical-to-epg">iCalToEPG</el-menu-item>
+      <el-menu-item index="/geojson-combine">GeoJSON Combine</el-menu-item>
+      <el-menu-item index="/edit-ical">Edit iCal</el-menu-item>
       <el-menu-item index="/about">About</el-menu-item>
     </el-menu>
      <!-- <nav>

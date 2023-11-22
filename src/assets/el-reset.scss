@@ -131,3 +131,71 @@ button.el-button.button-reset {
     }
   }
 }
+
+/* Dialog 样式革新 */
+$shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 5px 10px, rgba(15, 15, 15, 0.2) 0px 15px 40px;
+
+.el-dialog {
+  border-radius: 5px;
+  box-shadow: $shadow;
+  overflow: hidden;
+  transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+  .el-dialog__header {
+      background: rgb(251, 251, 250);
+      padding: 10px 20px;
+  }
+
+  &.is-fullscreen {
+      border-radius: unset;
+  }
+}
+.el-message-box__headerbtn,
+.d2-crud-dialog .el-dialog__headerbtn,
+.el-dialog__headerbtn {
+    top: 5px;
+    right: 7px;
+    padding: 5px 7px;
+    border-radius: 3px;
+    transition: all .2s ease;
+
+    &.fullscreen {
+        right: 40px;
+    }
+}
+.el-message-box__headerbtn:hover,
+.el-dialog__headerbtn:hover {
+    background: #00000015;
+}
+
+.el-message-box__headerbtn:active,
+.el-dialog__headerbtn:active {
+    background: #0000002f;
+}
+
+/* Popper 样式革新 */
+
+.el-popper {
+  margin: 2px 0 !important;
+  // &[x-placement^=bottom] {
+  //   border-top-left-radius: 0;
+  //   border-top-right-radius: 0;
+  // }
+}
+.el-popper .popper__arrow {
+  display: none;
+}
+.el-select-dropdown__list,
+.el-dropdown-menu,
+.el-autocomplete-suggestion__wrap {
+  padding: 4px 4px;
+}
+.el-select-dropdown__item,
+.el-dropdown-menu__item,
+.el-autocomplete-suggestion li {
+  border-radius: calc($--border-radius-base - 1px);
+}
+
+.el-time-panel {
+  border-radius: $--border-radius-base;
+}

@@ -36,6 +36,16 @@ const routes = [
     component: () => import('@/views/iCalToEPG/index.vue')
   },
   {
+    path: '/geojson-combine',
+    name: 'GeoJSONCombine',
+    component: () => import('@/views/GeoJSONCombine/index.vue')
+  },
+  {
+    path: '/edit-ical',
+    name: 'EditiCal',
+    component: () => import('@/views/EditiCal/index.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('@/views/About.vue')
