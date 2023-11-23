@@ -180,9 +180,6 @@
                       />
                     </div>
                   </el-tab-pane>
-                  <el-tab-pane label="实时预览" name="preview">
-                    
-                  </el-tab-pane>
                 </el-tabs>
               </el-form>
           </template>
