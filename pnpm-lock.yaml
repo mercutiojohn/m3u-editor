@@ -44,6 +44,9 @@ dependencies:
   leaflet:
     specifier: ^1.9.4
     version: 1.9.4
+  leaflet-draw:
+    specifier: ^1.0.4
+    version: 1.0.4
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -8464,6 +8467,10 @@ packages:
       dotenv: 16.3.1
       dotenv-expand: 10.0.0
     dev: true
+
+  /leaflet-draw@1.0.4:
+    resolution: {integrity: sha512-rsQ6saQO5ST5Aj6XRFylr5zvarWgzWnrg46zQ1MEOEIHsppdC/8hnN8qMoFvACsPvTioAuysya/TVtog15tyAQ==}
+    dev: false
 
   /leaflet@1.9.4:
     resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}

@@ -51,6 +51,11 @@ const routes = [
     component: () => import('@/views/DataModeling/index.vue')
   },
   {
+    path: '/map-download',
+    name: 'MapDownload',
+    component: () => import('@/views/MapDownload/index.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('@/views/About.vue')

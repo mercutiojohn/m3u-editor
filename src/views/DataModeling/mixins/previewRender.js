@@ -15,8 +15,11 @@ export default {
     previewFormItems() {
       return this.previewFormItemsRender(this.coreData.fieldList)
     },
-    previewFormData() {
-      return this.previewFormDataRender(this.coreData.fieldList)
+    // examplePreviewFormData() {
+    //   return this.previewFormDataRender(this.coreData.fieldList)
+    // },
+    examplePreviewTableData() {
+      return this.examplePreviewTableDataRender(this.coreData.fieldList)
     },
     sqlPreview() {
       return this.sqlPreviewRender(this.coreData.fieldList)
@@ -41,7 +44,8 @@ export default {
 
     previewTableColumnsRender(fieldList = this.coreData.fieldList) {
       return fieldList.map(field => ({
-        prop: 'exampleData',
+        // prop: 'exampleData',
+        prop: field.field,
         label: field.name || '未命名',
         properties: field.tableProperties
       }));
@@ -49,15 +53,28 @@ export default {
     previewFormItemsRender(fieldList = this.coreData.fieldList) {
       return fieldList.map(field => {
         const component = this.formType(field.type);
-        return { prop: 'exampleData', label: field.name || '未命名', component };
+        return { 
+          // prop: 'exampleData',
+          prop: field.field,
+          label: field.name || '未命名',
+          component,
+          properties: field.formProperties
+        };
       });
     },
-    previewFormDataRender(fieldList = this.coreData.fieldList) {
+    // previewFormDataRender(fieldList = this.coreData.fieldList) {
+    //   let data = {};
+    //   fieldList.forEach(field => {
+    //     data[field.field || 'exampleData'] = '';
+    //   });
+    //   return data;
+    // },
+    examplePreviewTableDataRender(fieldList = this.coreData.fieldList) {
       let data = {};
       fieldList.forEach(field => {
-        data[field.name || 'exampleData'] = '';
+        data[field.field || 'exampleData'] = '示例数据';
       });
-      return data;
+      return [data, data];
     },
     sqlPreviewRender(fieldList = this.coreData.fieldList) {
       if (fieldList.length === 0) {

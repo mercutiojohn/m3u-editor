@@ -46,7 +46,9 @@ export default {
             icon: 'el-icon-edit'
           },
           onClick: [this.handleToModify],
-          show: 'modify'
+          show: 'modify',
+          showRow: ['submitted'],
+          showPage: ['submit'],
         },
         {
           name: '取消',
@@ -56,7 +58,9 @@ export default {
             icon: 'el-icon-close'
           },
           onClick: [this.handleCancel],
-          show: 'cancel'
+          show: 'cancel',
+          showRow: ['submitted'],
+          showPage: ['submit'],
         },
         {
           name: '查看',
@@ -66,7 +70,9 @@ export default {
             icon: 'el-icon-view'
           },
           onClick: [this.handleToView],
-          show: 'view'
+          show: 'view',
+          showRow: ['handled', 'settled', 'confirmed', 'rejected'],
+          showPage: ['submit']
         },
 
         {
@@ -77,7 +83,9 @@ export default {
             icon: 'el-icon-edit'
           },
           onClick: [this.handleToTake],
-          show: 'edit'
+          show: 'edit',
+          showRow: ['draft'],
+          showPage: ['submit']
         },
         {
           name: '删除',
@@ -87,7 +95,9 @@ export default {
             icon: 'el-icon-close'
           },
           onClick: [this.handleDelete],
-          show: 'delete'
+          show: 'delete',
+          showRow: ['draft'],
+          showPage: ['submit']
         },
         {
           name: '确认',
@@ -97,7 +107,9 @@ export default {
             icon: 'el-icon-check'
           },
           onClick: [this.handleToConfirm],
-          show: 'settleConfirm'
+          show: 'settleConfirm',
+          showRow: ['settled'],
+          showPage: ['submit']
         },
         {
           name: '接单',
@@ -107,7 +119,9 @@ export default {
             icon: 'el-icon-edit'
           },
           onClick: [this.handleToTake],
-          show: 'handle'
+          show: 'handle',
+          showRow: ['submitted'],
+          showPage: ['handle'],
         },
         {
           name: '反馈',
@@ -117,7 +131,9 @@ export default {
             icon: 'el-icon-check'
           },
           onClick: [this.handleToConfirm],
-          show: 'settle'
+          show: 'settle',
+          showRow: ['handled'],
+          showPage: ['handle']
         },
         {
           name: '查看',
@@ -127,7 +143,9 @@ export default {
             icon: 'el-icon-view'
           },
           onClick: [this.handleToView],
-          show: 'view-handle'
+          show: 'view-handle',
+          showRow: ['settled', 'confirmed', 'rejected'],
+          showPage: ['handle']
         },
         {
           name: '查看',
@@ -137,7 +155,9 @@ export default {
             icon: 'el-icon-view'
           },
           onClick: [this.handleToView],
-          show: 'view-analytics'
+          show: 'view-analytics',
+          showRow: true,
+          showPage: ['analytics'],
         },
         {
           name: '查看',
@@ -147,7 +167,9 @@ export default {
             icon: 'el-icon-view'
           },
           onClick: [this.handleToView],
-          show: 'view-maintenance'
+          show: 'view-maintenance',
+          showRow: true,
+          showPage: ['maintenance']
         },
         {
           name: '查看',
@@ -157,7 +179,9 @@ export default {
             icon: 'el-icon-view'
           },
           onClick: [this.handleToView],
-          show: 'view-driver'
+          show: 'view-driver',
+          showRow: true,
+          showPage: ['driver']
         }
       ],
       columns: [

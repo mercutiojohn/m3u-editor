@@ -1,4 +1,4 @@
-import fieldTemplate from '../utils/fieldTemplate'
+import fieldTemplate from '../utils/init/fieldTemplate'
 
 export default {
   data() {

@@ -10,6 +10,7 @@
       <el-menu-item index="/geojson-combine">GeoJSON Combine</el-menu-item>
       <el-menu-item index="/edit-ical">Edit iCal</el-menu-item>
       <el-menu-item index="/data-modeling">Data Modeling</el-menu-item>
+      <el-menu-item index="/map-download">Map Download</el-menu-item>
       <el-menu-item index="/about">About</el-menu-item>
     </el-menu>
      <!-- <nav>

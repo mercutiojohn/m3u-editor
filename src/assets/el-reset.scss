@@ -12,6 +12,11 @@
     // border: 1px solid #000 !important;
     background: #00000018;
   }
+  &.el-tabs--left {
+    .el-tabs__nav {
+      flex-direction: column;
+    }
+  }
   .el-tabs__nav-wrap {
     margin-bottom: 0;
   }

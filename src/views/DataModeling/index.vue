@@ -1,6 +1,14 @@
 <template>
   <div style="box-sizing: border-box; flex-direction: column; padding: 20px; overflow: hidden; display: flex; width: 100%; height:100%; gap: 10px;">
     <div class="header" style="flex-shrink:0; height: 40px">
+      <!-- <el-form :model="coreData" inline label-width="120px">
+        <el-form-item prop="name" label="名称">
+          <el-input v-model="coreData.name"></el-input>
+        </el-form-item>
+        <el-form-item prop="name" label="作者">
+          <el-input v-model="coreData.functionAuthor"></el-input>
+        </el-form-item>
+      </el-form> -->
       <el-tabs
           v-model="activeTab"
           type="card"
@@ -10,7 +18,15 @@
           <el-tab-pane v-for="(item, index) in tabs" :key="index" :label="item.label" :name="item.name"> </el-tab-pane>
       </el-tabs>
     </div>
-    <div class="main" v-if="activeTab === 'edit'">
+    <div class="main" v-if="activeTab === 'edit'" style="overflow-y: scroll; ">
+      <el-form :model="coreData" inline label-width="120px">
+        <el-form-item prop="name" label="名称">
+          <el-input v-model="coreData.name"></el-input>
+        </el-form-item>
+        <el-form-item prop="name" label="作者">
+          <el-input v-model="coreData.functionAuthor"></el-input>
+        </el-form-item>
+      </el-form>
       <!-- <h3>字段配置</h3> -->
       <!-- <draggable v-model="coreData.fieldList" tag="tbody" @start="drag=true" @end="drag=false"> -->
       <el-table :data="coreData.fieldList">
@@ -20,6 +36,7 @@
                 <el-tabs
                   v-model="propertiesActiveTab"
                   type="card"
+                  tab-position="left"
                   class="tab-reset size-mini ios my-tabs"
                 >
                   <el-tab-pane label="基本信息" name="edit">
@@ -40,6 +57,9 @@
                             :value="item.typeName">
                             </el-option>
                           </el-select>
+                        </el-form-item>
+                        <el-form-item label="备注">
+                          <el-input v-model="props.row.remark" type="textarea"></el-input>
                         </el-form-item>
                       </div>
                       <vue-json-editor
@@ -180,15 +200,95 @@
                       />
                     </div>
                   </el-tab-pane>
+                  <el-tab-pane label="Java 配置" name="javaUtils">
+                    <div style="display: flex; gap: 10px">
+                      <div style="width: 100%">
+                        <!-- <el-form-item label="名称">
+                          <el-input v-model="props.row.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="字段名">
+                          <el-input v-model="props.row.field"></el-input>
+                        </el-form-item>
+                        <el-form-item label="数据类型">
+                          <el-select v-model="props.row.type" placeholder="请选择">
+                            <el-option
+                            v-for="item in dataTypes"
+                            :key="item.typeName"
+                            :label="item.typeLabel"
+                            :value="item.typeName">
+                            </el-option>
+                          </el-select>
+                        </el-form-item> -->
+                      </div>
+                      <vue-json-editor
+                        style="width: 500px; flex-shrink: 0"
+                        v-model="props.row.javaProperties"
+                        :showBtns="false"
+                        :mode="'tree'"
+                        lang="zh"
+                        :expandedOnStart="true"
+                      />
+                    </div>
+                  </el-tab-pane>
+                  <el-tab-pane label="SQL 配置" name="sqlUtils">
+                    <div style="display: flex; gap: 10px">
+                      <div style="width: 100%">
+                        <!-- <el-form-item label="名称">
+                          <el-input v-model="props.row.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="字段名">
+                          <el-input v-model="props.row.field"></el-input>
+                        </el-form-item>
+                        <el-form-item label="数据类型">
+                          <el-select v-model="props.row.type" placeholder="请选择">
+                            <el-option
+                            v-for="item in dataTypes"
+                            :key="item.typeName"
+                            :label="item.typeLabel"
+                            :value="item.typeName">
+                            </el-option>
+                          </el-select>
+                        </el-form-item> -->
+                      </div>
+                      <vue-json-editor
+                        style="width: 500px; flex-shrink: 0"
+                        v-model="props.row.sqlProperties"
+                        :showBtns="false"
+                        :mode="'tree'"
+                        lang="zh"
+                        :expandedOnStart="true"
+                      />
+                    </div>
+                  </el-tab-pane>
                 </el-tabs>
               </el-form>
           </template>
         </el-table-column>
-        <el-table-column prop="field" label="字段名"></el-table-column>
-        <el-table-column prop="name" label="名称"></el-table-column>
-        <el-table-column prop="type" label="数据类型"></el-table-column>
+        <el-table-column prop="field" label="字段名" show-overflow-tooltip width="200" fixed="left"></el-table-column>
+        <el-table-column prop="name" label="名称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="type" label="数据类型" show-overflow-tooltip width="100"></el-table-column>
+        <el-table-column label="Java 字段名" show-overflow-tooltip width="150">
+          <template #default="scope">
+            {{scope.row.javaProperties.javaField}}
+          </template>
+        </el-table-column>
+        <el-table-column label="Java 数据类型" show-overflow-tooltip width="120">
+          <template #default="scope">
+            {{scope.row.javaProperties.javaType}}
+          </template>
+        </el-table-column>
+        <el-table-column label="SQL 字段名" show-overflow-tooltip width="150">
+          <template #default="scope">
+            {{scope.row.sqlProperties.columnName}}
+          </template>
+        </el-table-column>
+        <el-table-column label="SQL 数据类型" show-overflow-tooltip width="150">
+          <template #default="scope">
+            {{`${scope.row.sqlProperties.columnType}${['VARCHAR'].includes(scope.row.sqlProperties.columnType) && scope.row.sqlProperties.columnLength ? '(' + scope.row.sqlProperties.columnLength + ')' : ''}`}}
+          </template>
+        </el-table-column>
         <!-- <el-table-column prop="id" label="id"></el-table-column> -->
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right">
           <template #default="scope">
             <el-button size="mini" @click="moveUp(scope.$index)" :disabled="scope.$index === 0">上移</el-button>
             <el-button size="mini" @click="moveDown(scope.$index)" :disabled="scope.$index === coreData.fieldList.length - 1">下移</el-button>
@@ -197,11 +297,13 @@
         </el-table-column>
       </el-table>
       <el-button type="primary" @click="addField">添加字段</el-button>
+      <el-button type="primary" @click="clearCoreData">清空</el-button>
       <!-- </draggable> -->
+      <pre>{{coreData}}</pre>
     </div>
-    <preview :coreData="coreData" v-if="activeTab === 'preview'"/>
-    <table-settings :coreData="coreData" v-if="activeTab === 'tableUtils'"/>
-    <form-settings :coreData="coreData" v-if="activeTab === 'formUtils'"/>
+    <preview :coreData="coreData" v-if="activeTab === 'preview'" style="overflow-y: scroll; "/>
+    <table-settings :coreData="coreData" v-if="activeTab === 'tableUtils'" style="overflow-y: scroll; "/>
+    <form-settings :coreData="coreData" v-if="activeTab === 'formUtils'" style="overflow-y: scroll; "/>
   </div>
 </template>
 
@@ -238,9 +340,13 @@ export default {
       // 配置页面
       tabs: [
         { "label": "元数据", "name": "edit" },
-        { "label": "表格", "name": "tableUtils" },
         { "label": "表单", "name": "formUtils" },
-        { "label": "角色", "name": "roleUtils" },
+        // { "label": "VForm", "name": "vformUtils" }, // TODO
+        { "label": "表格和查询", "name": "tableUtils" },
+        { "label": "角色和视图", "name": "roleUtils" },
+        { "label": "Java 配置", "name": "javaUtils" },
+        { "label": "SQL 配置", "name": "sqlUtils" },
+        { "label": "生成配置", "name": "genUtils" },
         { "label": "预览", "name": "preview" }
       ],
       // 核心数据
@@ -259,7 +365,9 @@ export default {
   },
 
   methods: {
-
+    clearCoreData() {
+      this.coreData = coreDataInit
+    }
   }
 }
 </script>
