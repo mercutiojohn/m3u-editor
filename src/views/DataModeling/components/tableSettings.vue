@@ -1,6 +1,6 @@
 <template>
-  <div class="table-settings" style="width: 100%; height: 100vh; flex-shrink: 0">
-    <div style="display: flex; gap: 10px; width: 100%; ">
+  <div class="table-settings">
+    <div style="display: flex; gap: 10px; width: 100%; overflow-x: hidden">
       <div class="sidebar" style="width: 500px">
         <h4>表格配置</h4>
         <vue-json-editor

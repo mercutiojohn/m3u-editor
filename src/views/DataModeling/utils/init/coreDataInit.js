@@ -3,7 +3,7 @@ import fieldsInit from "./fieldsInit"
 export default {
   name: '个人信息',
   id: 'personalInfo',
-  functionAuthor: 'Mercutio',
+  author: 'Mercutio',
   remark: '',
   // 字段列表
   fieldList: fieldsInit,
@@ -126,6 +126,7 @@ export default {
   /** ----- 后端 ----- */
   // 生成属性配置
   genOptions: {
+    functionAuthor: 'Mercutio',
     moduleName: 'personManage', // 模块名（前台和 Mapper XML 使用）
     genType: '0', // 生成代码方式，0：zip压缩包；1：自定义路径 // TODO: backend changes to english expression like 'zip' or 'path'
     genPath: '', // 自定义生成路径

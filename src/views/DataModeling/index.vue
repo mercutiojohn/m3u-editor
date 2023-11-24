@@ -24,7 +24,7 @@
           <el-input v-model="coreData.name"></el-input>
         </el-form-item>
         <el-form-item prop="name" label="作者">
-          <el-input v-model="coreData.functionAuthor"></el-input>
+          <el-input v-model="coreData.author"></el-input>
         </el-form-item>
       </el-form>
       <!-- <h3>字段配置</h3> -->
@@ -297,7 +297,8 @@
         </el-table-column>
       </el-table>
       <el-button type="primary" @click="addField">添加字段</el-button>
-      <el-button type="primary" @click="clearCoreData">清空</el-button>
+      <!-- <el-button type="primary" @click="clearCoreData">清空</el-button> -->
+      <el-button type="primary" @click="clearCoreData">初始化</el-button>
       <!-- </draggable> -->
       <pre>{{coreData}}</pre>
     </div>
