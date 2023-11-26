@@ -313,6 +313,7 @@
     <form-settings :coreData="coreData" v-if="activeTab === 'formUtils'" style="overflow-y: scroll; "/>
     <role-settings :coreData="coreData" v-if="activeTab === 'roleUtils'" style="overflow-y: scroll; "/>
     <gen-settings :coreData="coreData" v-if="activeTab === 'genUtils'" style="overflow-y: scroll; "/>
+    <dict-settings :coreData="coreData" v-if="activeTab === 'dictUtils'" style="overflow-y: scroll; "/>
   </div>
 </template>
 
@@ -331,6 +332,7 @@ import TableSettings from './components/tableSettings.vue'
 import FormSettings from './components/formSettings.vue'
 import RoleSettings from './components/roleSettings.vue'
 import GenSettings from './components/genSettings.vue'
+import DictSettings from './components/dictSettings.vue'
 
 export default {
   name: 'FieldConfigurator',
@@ -342,7 +344,8 @@ export default {
     TableSettings,
     FormSettings,
     RoleSettings,
-    GenSettings
+    GenSettings,
+    DictSettings
   },
   mixins: [tableActions],
   data() {

@@ -223,7 +223,7 @@ export default [
   },
   {
     "name": "手机号码",
-    "field": " phone",
+    "field": "phone",
     "type": "text",
     "remark": "",
     "formProperties": {
@@ -294,5 +294,85 @@ export default [
     },
     "roleProperties": {},
     "id": 1700880500073
+  },
+  {
+    "name": "状态",
+    "field": "submitStatus",
+    "type": "status",
+    "remark": "",
+    "formProperties": {
+      "type": "el-input",
+      "isRequired": true,
+      "gridSpan": 1,
+      "roles": {
+        "showViews": [
+          "edit",
+          "approve",
+          "view"
+        ],
+        "showStatus": [
+          "draft",
+          "submitted",
+          "approved",
+          "view"
+        ],
+        "readOnlyRoles": [
+          "view"
+        ]
+      },
+      "props": {
+        "base": {
+          "labelWidth": ""
+        },
+        "inner": {}
+      }
+    },
+    "tableProperties": {
+      "tableRenderType": "text",
+      "renderFunc": "",
+      "roles": {
+        "showViews": [
+          "edit",
+          "approve",
+          "view"
+        ]
+      },
+      "props": {
+        "prop": "textTest",
+        "label": "文本测试",
+        "align": "center",
+        "headerAlign": "center",
+        "minWidth": "",
+        "width": "",
+        "showOverflowTooltip": true,
+        "render": ""
+      }
+    },
+    "searchFieldProperties": {
+      "searchFieldType": "text",
+      "roles": {
+        "showViews": [
+          "edit",
+          "approve",
+          "view"
+        ]
+      }
+    },
+    "javaProperties": {
+      "javaField": "textTest",
+      "javaType": "String"
+    },
+    "sqlProperties": {
+      "columnName": "text_test",
+      "columnType": "VARCHAR",
+      "columnLength": "255",
+      "queryType": "EQ",
+      "isInsert": true,
+      "isEdit": true,
+      "isList": true,
+      "isQuery": true
+    },
+    "roleProperties": {},
+    "id": 1700973367879
   }
 ]

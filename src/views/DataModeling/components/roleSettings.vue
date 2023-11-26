@@ -1,6 +1,11 @@
 <template>
   <div>
     <h3>视图</h3>
+    <el-form>
+      <el-form-item label="字段名">
+        <el-input v-model="coreData.roleOptions.viewBindField"></el-input>
+      </el-form-item>
+    </el-form>
     <el-button @click="addView">新增视图</el-button>
     <el-table :data="coreData.roleOptions.views" style="width: 100%">
       <el-table-column type="expand">
@@ -33,6 +38,11 @@
       </el-table-column>
     </el-table>
     <h3>状态</h3>
+    <el-form>
+      <el-form-item label="状态绑定字段">
+        <el-input v-model="coreData.roleOptions.statusBindField"></el-input>
+      </el-form-item>
+    </el-form>
     <el-button @click="addStatus">新增状态</el-button>
     <el-table :data="coreData.roleOptions.statuses" style="width: 100%">
       <el-table-column type="expand">

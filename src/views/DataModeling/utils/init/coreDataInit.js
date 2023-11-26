@@ -207,6 +207,7 @@ export default {
   // 视图属性配置
   roleOptions: {
     // TODO: 表格预览可选择视图
+    viewBindField: 'personalInfoViews',
     views: [
       {
         name: '编辑',
@@ -224,6 +225,7 @@ export default {
         remark: '查看视图'
       }
     ],
+    statusBindField: 'submitStatus',
     statuses: [
       {
         name: '草稿',

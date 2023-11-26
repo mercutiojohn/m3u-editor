@@ -2,26 +2,31 @@
   <div class="table-settings">
     <div style="display: flex; gap: 10px; width: 100%; overflow-x: hidden">
       <div class="sidebar" style="width: 500px">
-        <h4>表格配置</h4>
-        <vue-json-editor
-          style="width: 100%; flex-shrink: 0"
-          v-model="coreData.tableOptions"
-          :showBtns="false"
-          :mode="'tree'"
-          lang="zh"
-          :expandedOnStart="true"
-        />
-        <pre>{{coreData.tableOptions}}</pre>
-        <h4>模拟数据</h4>
-        <vue-json-editor
-          style="width: 100%; flex-shrink: 0"
-          v-model="previewTableData"
-          :showBtns="false"
-          :mode="'tree'"
-          lang="zh"
-          :expandedOnStart="true"
-        />
-        <pre>{{examplePreviewTableData}}</pre>
+        <el-tabs type="border-card">
+          <el-tab-pane label="表格配置">
+            <vue-json-editor
+              style="width: 100%; flex-shrink: 0"
+              v-model="coreData.tableOptions"
+              :showBtns="false"
+              :mode="'tree'"
+              lang="zh"
+              :expandedOnStart="true"
+            />
+            <pre>{{ coreData.tableOptions }}</pre>
+          </el-tab-pane>
+
+          <el-tab-pane label="模拟数据">
+            <vue-json-editor
+              style="width: 100%; flex-shrink: 0"
+              v-model="previewTableData"
+              :showBtns="false"
+              :mode="'tree'"
+              lang="zh"
+              :expandedOnStart="true"
+            />
+            <pre>{{ examplePreviewTableData }}</pre>
+          </el-tab-pane>
+        </el-tabs>
       </div>
       <table-preview :tableOptions="coreData.tableOptions" :previewTableData="previewTableData" :previewTableColumns="previewTableColumns" />
     </div>

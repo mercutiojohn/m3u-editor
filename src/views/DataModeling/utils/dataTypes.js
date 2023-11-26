@@ -8,7 +8,9 @@ export default [
     { typeName: 'datetime', typeLabel: '日期和时间' },
     { typeName: 'imageUpload', typeLabel: '图片' },
     { typeName: 'fileUpload', typeLabel: '文件' },
-    { typeName: 'editor', typeLabel: ' 富文本' },
+    { typeName: 'editor', typeLabel: '富文本' },
+
+    { typeName: 'status', typeLabel: '状态' },
 
     { typeName: 'boolean', typeLabel: '布尔值 / 开关' },
     { typeName: 'date', typeLabel: '日期' },
