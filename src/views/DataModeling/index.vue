@@ -23,8 +23,14 @@
         <el-form-item prop="name" label="名称">
           <el-input v-model="coreData.name"></el-input>
         </el-form-item>
+        <el-form-item prop="name" label="ID">
+          <el-input v-model="coreData.id"></el-input>
+        </el-form-item>
         <el-form-item prop="name" label="作者">
           <el-input v-model="coreData.author"></el-input>
+        </el-form-item>
+        <el-form-item prop="版本" label="ID">
+          <el-input v-model="coreData.version"></el-input>
         </el-form-item>
       </el-form>
       <!-- <h3>字段配置</h3> -->
@@ -170,7 +176,7 @@
                       />
                     </div>
                   </el-tab-pane>
-                  <el-tab-pane label="角色配置" name="roleUtils">
+                  <el-tab-pane label="视图配置" name="ro'le'U'ti'ls">
                     <div style="display: flex; gap: 10px">
                       <div style="width: 100%">
                         <!-- <el-form-item label="名称">
@@ -305,6 +311,8 @@
     <preview :coreData="coreData" v-if="activeTab === 'preview'" style="overflow-y: scroll; "/>
     <table-settings :coreData="coreData" v-if="activeTab === 'tableUtils'" style="overflow-y: scroll; "/>
     <form-settings :coreData="coreData" v-if="activeTab === 'formUtils'" style="overflow-y: scroll; "/>
+    <role-settings :coreData="coreData" v-if="activeTab === 'roleUtils'" style="overflow-y: scroll; "/>
+    <gen-settings :coreData="coreData" v-if="activeTab === 'genUtils'" style="overflow-y: scroll; "/>
   </div>
 </template>
 
@@ -321,6 +329,8 @@ import tableActions from './mixins/tableActions'
 import Preview from './components/preview.vue'
 import TableSettings from './components/tableSettings.vue'
 import FormSettings from './components/formSettings.vue'
+import RoleSettings from './components/roleSettings.vue'
+import GenSettings from './components/genSettings.vue'
 
 export default {
   name: 'FieldConfigurator',
@@ -330,7 +340,9 @@ export default {
     // 标签页
     Preview,
     TableSettings,
-    FormSettings
+    FormSettings,
+    RoleSettings,
+    GenSettings
   },
   mixins: [tableActions],
   data() {
@@ -344,9 +356,10 @@ export default {
         { "label": "表单", "name": "formUtils" },
         // { "label": "VForm", "name": "vformUtils" }, // TODO
         { "label": "表格和查询", "name": "tableUtils" },
-        { "label": "角色和视图", "name": "roleUtils" },
-        { "label": "Java 配置", "name": "javaUtils" },
-        { "label": "SQL 配置", "name": "sqlUtils" },
+        { "label": "视图和状态", "name": "roleUtils" },
+        { "label": "字典", "name": "dictUtils" },
+        // { "label": "Java 配置", "name": "javaUtils" },
+        // { "label": "SQL 配置", "name": "sqlUtils" },
         { "label": "生成配置", "name": "genUtils" },
         { "label": "预览", "name": "preview" }
       ],

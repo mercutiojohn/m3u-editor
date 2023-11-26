@@ -4,6 +4,7 @@ export default {
   name: '个人信息',
   id: 'personalInfo',
   author: 'Mercutio',
+  version: '1',
   remark: '',
   // 字段列表
   fieldList: fieldsInit,
@@ -23,20 +24,65 @@ export default {
       highlightCurrentRow: false, // 是否要高亮当前行
       highlightSelectionRow: false // 是否要高亮复选框选中行（仅针对开启 selection 有效）
     },
+    statusColumn: 'status',
     // 表格操作列
     actionButtons: [
       {
         name: '编辑',
+        id: 'edit',
         props: {
             type: 'text',
             size: 'mini',
             icon: 'el-icon-edit'
         },
-        onClick: '',
-        show: 'edit',
-        showRow: [],
-        showPage: []
-    }
+        onClick: 'handleRowEdit',
+        roles: {
+          showStatus: ['draft'],
+          showViews: ['edit']
+        }
+      },
+      {
+        name: '删除',
+        id: 'delete',
+        props: {
+            type: 'text',
+            size: 'mini',
+            icon: 'el-icon-delete'
+        },
+        onClick: 'handleRowDelete',
+        roles: {
+          showStatus: ['draft'],
+          showViews: ['edit']
+        }
+      },
+      {
+        name: '提交',
+        id: 'submit',
+        props: {
+            type: 'text',
+            size: 'mini',
+            icon: 'el-icon-delete'
+        },
+        onClick: 'handleRowSubmit',
+        roles: {
+          showStatus: ['draft'],
+          showViews: ['edit']
+        }
+      },
+      {
+        name: '审批',
+        id: 'approve',
+        props: {
+            type: 'text',
+            size: 'mini',
+            icon: 'el-icon-edit'
+        },
+        onClick: 'handleRowApprove',
+        roles: {
+          showStatus: ['submitted'],
+          showViews: ['approve']
+        }
+      }
     ],
   },
   // 查询条件全局选项
@@ -50,7 +96,9 @@ export default {
   // 表单全局选项
   formOptions: {
     useGrid: true, // 使用 Grid 布局
-    gridColumns: 3, // Grid 列数
+    gridColumns: 2, // Grid 列数
+    gridRowGap: '0px', // 如果使用 Grid 布局，空隙宽度
+    gridColumnGap: '10px', // 如果使用 Grid 布局，空隙宽度
     // ElForm 配置
     props: {
       // size: '', // 全局组件大小
@@ -62,7 +110,63 @@ export default {
       statusIcon: true, // 是否在输入框中显示校验结果反馈图标	
       inlineMessage: true, // 是否以行内形式展示校验信息
       rules: {} // 校验规则
-    }
+    },
+    actionButtons: [
+      {
+        name: '提交',
+        id: 'submit',
+        props: {
+            type: 'primary',
+            size: 'mini',
+            icon: 'el-icon-upload'
+        },
+        onClick: 'handleFormSubmit',
+        roles: {
+          showStatus: ['draft'],
+          showViews: ['edit']
+        }
+      },
+      {
+        name: '取消',
+        id: 'submit',
+        props: {
+            size: 'mini',
+            icon: 'el-icon-upload'
+        },
+        onClick: 'handleFormCancel',
+        roles: {
+          showStatus: ['draft'],
+          showViews: ['edit']
+        }
+      },
+      {
+        name: '同意',
+        id: 'approve',
+        props: {
+          type: 'primary',
+            size: 'mini',
+            icon: 'el-icon-tick'
+        },
+        onClick: 'handleFormApprove',
+        roles: {
+          showStatus: ['submitted'],
+          showViews: ['approve']
+        }
+      },
+      {
+        name: '驳回',
+        id: 'back',
+        props: {
+            size: 'mini',
+            icon: 'el-icon-cross'
+        },
+        onClick: 'handleFormBack',
+        roles: {
+          showStatus: ['submitted'],
+          showViews: ['approve']
+        }
+      },
+    ]
   }, 
   // 自定义 CSS 样式
   customCssClasses: '',
@@ -73,8 +177,8 @@ export default {
   // 字典配置
   dictsOptions: {
     // 静态字典
-    dicts: {
-      sex: [
+    staticDicts: {
+      gender: [
         {
           label: '男',
           value: 1,
@@ -100,24 +204,52 @@ export default {
     ]
   },
   /** ----- RBAC / 流程 视图 ----- */
-  // 角色属性配置
+  // 视图属性配置
   roleOptions: {
-    // TODO: 表格预览可选择角色视图
-    roles: [
+    // TODO: 表格预览可选择视图
+    views: [
       {
         name: '编辑',
         id: 'edit',
-        remark: ''
+        remark: '编辑视图'
       },
       {
         name: '审批',
         id: 'approve',
-        remark: ''
+        remark: '审批视图'
       },
       {
         name: '查看',
         id: 'view',
-        remark: ''
+        remark: '查看视图'
+      }
+    ],
+    statuses: [
+      {
+        name: '草稿',
+        id: 'draft',
+        remark: '草稿'
+      },
+      {
+        name: '已提交',
+        aliases: ['待审批'],
+        id: 'submitted',
+        remark: '已提交'
+      },
+      {
+        name: '已审批',
+        id: 'approved',
+        remark: '已审批'
+      },
+      {
+        name: '已完成',
+        id: 'done',
+        remark: '已完成'
+      },
+      {
+        name: '只读',
+        id: 'view',
+        remark: '只读'
       }
     ],
     // TODO: 表格视图顺序
@@ -133,7 +265,7 @@ export default {
     // 菜单
     parentMenuId: '', // 上级菜单
     menuName: '个人信息维护', // 自定义菜单名 // TODO
-    icon: 'el-document', // 菜单Icon // TODO
+    icon: 'el-icon-document', // 菜单Icon // TODO
   },
   // Java 属性配置
   javaOptions: {

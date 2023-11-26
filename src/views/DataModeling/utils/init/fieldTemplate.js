@@ -9,8 +9,9 @@ export default {
     isRequired: true, // 必填 // TODO: backend links this
     gridSpan: 1, // 如果使用 Grid 布局，所占格数量
     roles: {
-      showRoles: ['edit', 'approve', 'view'], // 字段显示的角色
-      readOnlyRoles: ['view'], // 字段只读的角色
+      showViews: ['edit', 'approve', 'view'], // 字段显示的视图
+      showStatus: ['draft', 'submitted', 'approved', 'view'], // 字段显示的表单状态
+      readOnlyRoles: ['view'], // 字段只读的视图
     },
     // TODO: 如何结合 vform 自动加载
     props: {
@@ -29,7 +30,7 @@ export default {
     tableRenderType: 'text', // 渲染模式预设 // TODO: 初始化选择总 type 自动填入该值
     renderFunc: '', // 自定义渲染函数 // TODO: 初始化选择总 type 自动填入该值；转译文本
     roles: {
-      showRoles: ['edit', 'approve', 'view'], // 字段显示的角色
+      showViews: ['edit', 'approve', 'view'], // 字段显示的视图
     },
     props: {
       prop: 'textTest',
@@ -46,7 +47,7 @@ export default {
   searchFieldProperties: {
     searchFieldType: 'text', // 渲染模式预设 // TODO: 初始化选择总 type 自动填入该值
     roles: {
-      showRoles: ['edit', 'approve', 'view'], // 字段显示的角色
+      showViews: ['edit', 'approve', 'view'], // 字段显示的视图
     },
   },
   javaProperties: {
