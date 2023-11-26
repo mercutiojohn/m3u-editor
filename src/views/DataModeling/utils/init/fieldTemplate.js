@@ -64,6 +64,7 @@ export default {
     isEdit: true,
     isList: true,
     isQuery: true,
+    isNotNull: false
   },
   roleProperties: {
     

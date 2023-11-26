@@ -37,6 +37,7 @@
       </el-tab-pane>
 
       <el-tab-pane label="SQL 预览">
+        {{coreData.sqlOptions.tableName}}
         <pre>{{ sqlPreview }}</pre>
       </el-tab-pane>
 

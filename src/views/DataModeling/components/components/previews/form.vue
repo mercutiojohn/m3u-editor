@@ -8,6 +8,12 @@
         :style="gridItemStyle(item)"
         v-bind="item.properties.props.base"
       >
+        <template slot="label">
+          <!-- <i class="el-icon-info"></i>  -->
+          <span>{{item.label}}</span>
+          <span style="color: red; margin-left: 5px" v-if="item.properties.isRequired">*</span>
+          <el-tag style="margin-left: 5px" type="info">{{item.prop}}</el-tag>
+        </template>
         <component
           :is="item.component"
           v-model="previewFormData[item.prop]"

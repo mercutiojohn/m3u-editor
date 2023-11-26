@@ -22,7 +22,7 @@ export default {
       return this.examplePreviewTableDataRender(this.coreData.fieldList)
     },
     sqlPreview() {
-      return this.sqlPreviewRender(this.coreData.fieldList)
+      return this.sqlPreviewRender(this.coreData.sqlOptions.tableName, this.coreData.fieldList)
     },
     mapperXmlPreview() {
       return this.mapperXmlPreviewRender(this.coreData.fieldList)
@@ -76,18 +76,34 @@ export default {
       });
       return [data, data];
     },
-    sqlPreviewRender(fieldList = this.coreData.fieldList) {
+    // sqlPreviewRender(fieldList = this.coreData.fieldList) {
+    //   if (fieldList.length === 0) {
+    //     return '-- SQL 预览将在这里显示';
+    //   }
+
+    //   let fieldsSql = fieldList.map(field => {
+    //     let sqlType = this.sqlType(field.type);
+    //     return `\`${field.field}\` ${sqlType}`;
+    //   }).join(',\n  ');
+
+    //   return `CREATE TABLE your_table_name (\n  ${fieldsSql}\n);`;
+    // },
+
+    sqlPreviewRender(tableName = this.coreData.sqlOptions.tableName, fieldList = this.coreData.fieldList) {
       if (fieldList.length === 0) {
         return '-- SQL 预览将在这里显示';
       }
 
-      let fieldsSql = fieldList.map(field => {
-        let sqlType = this.sqlType(field.type);
-        return `\`${field.field}\` ${sqlType}`;
+      // 将每个字段转换为 SQL 列定义
+      const columnDefs = fieldList.map(field => {
+        const sql = field.sqlProperties;
+        return `\`${sql.columnName}\` ${sql.columnType}${sql.columnLength ? `(${sql.columnLength})` : ''} ${sql.isNotNull ? 'NOT NULL' : ''}`;
       }).join(',\n  ');
-
-      return `CREATE TABLE your_table_name (\n  ${fieldsSql}\n);`;
+    
+      // 生成 CREATE TABLE 语句
+      return `CREATE TABLE \`${tableName}\` (\n  ${columnDefs}\n);`;
     },
+
     mapperXmlPreviewRender(fieldList = this.coreData.fieldList) {
       if (fieldList.length === 0) {
         return '<!-- Mapper XML 预览将在这里显示 -->';
@@ -112,18 +128,49 @@ export default {
 </mapper>`;
     },
     generatedCodeRender(fieldList = this.coreData.fieldList) {
-      const tableColumns = fieldList.map(field => 
-        `<el-table-column prop="${field.field}" label="${field.name}"></el-table-column>`
-      ).join('\n    ');
+      // 转换属性名从小驼峰到横线连接形式
+      const camelCaseToKebabCase = (str) => {
+        return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+      };
+      // 将属性对象转换为 HTML 属性字符串
+      const propsToHtmlAttributes = (props) => {
+        return Object.entries(props || {})
+          .map(([key, value]) => `${camelCaseToKebabCase(key)}="${value}"`)
+          .join(' ');
+      };
+
+      const tableColumns = fieldList.map(field => {
+        const columnProps = propsToHtmlAttributes(field.tableProperties.props);
+        return `<el-table-column ${columnProps.trim()}></el-table-column>`;
+      }).join('\n      ');
 
       const formItems = fieldList.map(field => {
-        const component = field.type === 'text' ? 'el-input' : 'el-input-number';
-        return `<el-form-item label="${field.name}">
-          <${component} v-model="formData.${field.field}"></${component}>
-        </el-form-item>`;
-      }).join('\n    ');
+        let component = '';
+        switch (field.type) {
+          case 'text':
+            component = 'el-input';
+            break;
+          case 'number':
+            component = 'el-input-number';
+            break;
+          case 'radio':
+            component = 'el-radio-group';
+            break;
+          case 'checkbox':
+            component = 'el-checkbox-group';
+            break;
+          // 添加其他类型的处理逻辑
+          default:
+            component = 'el-input';
+        }
+        const formItemProps = propsToHtmlAttributes(field.formProperties.props.base);
+        const componentProps = propsToHtmlAttributes(field.formProperties.props.inner);
+        return `<el-form-item ${formItemProps}>
+        <${component} v-model="formData.${field.field}" ${componentProps.trim()}></${component}>
+      </el-form-item>`;
+      }).join('\n      ');
 
-      return `<template>
+  return `<template>
   <div>
     <el-table :data="tableData">
       ${tableColumns}
@@ -138,12 +185,16 @@ export default {
 export default {
   data() {
     return {
-      tableData: [{/* 数据 */}],
-      formData: {/* 表单数据 */}
+      tableData: [{/* 初始化表格数据 */}],
+      formData: {
+        // 初始化表单数据
+        ${fieldList.map(field => `${field.field}: null`).join(',\n        ')}
+      }
     };
   }
 };
 </script>`;
+    
     }
   }
 }
