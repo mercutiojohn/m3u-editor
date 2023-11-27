@@ -1,14 +1,20 @@
 <template>
   <div style="box-sizing: border-box; flex-direction: column; padding: 20px; overflow: hidden; display: flex; width: 100%; height:100%; gap: 10px;">
-    <div class="header" style="flex-shrink:0; height: 40px">
-      <!-- <el-form :model="coreData" inline label-width="120px">
+    <div class="header" style="flex-shrink:0;">
+      <el-form :model="coreData" inline>
         <el-form-item prop="name" label="名称">
           <el-input v-model="coreData.name"></el-input>
         </el-form-item>
-        <el-form-item prop="name" label="作者">
-          <el-input v-model="coreData.functionAuthor"></el-input>
+        <el-form-item prop="id" label="ID">
+          <el-input v-model="coreData.id"></el-input>
         </el-form-item>
-      </el-form> -->
+        <el-form-item prop="author" label="作者">
+          <el-input v-model="coreData.author"></el-input>
+        </el-form-item>
+        <el-form-item prop="version" label="版本">
+          <el-input v-model="coreData.version"></el-input>
+        </el-form-item>
+      </el-form>
       <el-tabs
           v-model="activeTab"
           type="card"
@@ -19,20 +25,6 @@
       </el-tabs>
     </div>
     <div class="main" v-if="activeTab === 'edit'" style="overflow-y: scroll; ">
-      <el-form :model="coreData" inline label-width="120px">
-        <el-form-item prop="name" label="名称">
-          <el-input v-model="coreData.name"></el-input>
-        </el-form-item>
-        <el-form-item prop="name" label="ID">
-          <el-input v-model="coreData.id"></el-input>
-        </el-form-item>
-        <el-form-item prop="name" label="作者">
-          <el-input v-model="coreData.author"></el-input>
-        </el-form-item>
-        <el-form-item prop="版本" label="ID">
-          <el-input v-model="coreData.version"></el-input>
-        </el-form-item>
-      </el-form>
       <!-- <h3>字段配置</h3> -->
       <!-- <draggable v-model="coreData.fieldList" tag="tbody" @start="drag=true" @end="drag=false"> -->
       <el-table :data="coreData.fieldList">

@@ -28,7 +28,7 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <form-preview style="width: 100%" :formOptions="coreData.formOptions" :previewFormData="previewFormData" :previewFormItems="previewFormItems" />
+      <form-preview style="width: 100%" :formOptions="coreData.formOptions" :previewFormData="previewFormData" :previewFormItems="previewFormItems" :roleOptions="coreData.roleOptions" />
     </div>
   </div>
 </template>

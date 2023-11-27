@@ -78,6 +78,7 @@ export default [
     "field": "gender",
     "type": "radio",
     "remark": "",
+    "bindDict": "gender",
     "formProperties": {
       "type": "el-input",
       "isRequired": true,

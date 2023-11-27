@@ -58,7 +58,8 @@ export default {
           prop: field.field,
           label: field.name || '未命名',
           component,
-          properties: field.formProperties
+          properties: field.formProperties,
+          options: this.coreData.dictsOptions.staticDicts[field.bindDict] // TODO: 抽取成自适应静态字典和动态字典的方法
         };
       });
     },

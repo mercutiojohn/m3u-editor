@@ -3,6 +3,7 @@ export default {
   field: `textTest`,
   type: 'text',
   remark: '',
+  bindDict: 'gender', // 绑定字典
   // 表单项配置
   formProperties: {
     type: 'el-input', // 类型 // TODO: 初始化选择总 type 自动填入该值

@@ -28,7 +28,7 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <table-preview :tableOptions="coreData.tableOptions" :previewTableData="previewTableData" :previewTableColumns="previewTableColumns" />
+      <table-preview :tableOptions="coreData.tableOptions" :previewTableData="previewTableData" :previewTableColumns="previewTableColumns" :roleOptions="coreData.roleOptions" />
     </div>
   </div>
 </template>
