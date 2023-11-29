@@ -17,9 +17,9 @@
     </el-form>
     <el-card>
       <el-form :model="previewFormData" v-bind="formOptions.props" :style="gridFormStyle()">
-        <template v-for="item in previewFormItems">
+        <template v-for="(item, index) in previewFormItems">
           <el-form-item
-            v-if="roleIncludes(item.properties.roles, 'showViews')"
+            v-if="viewIncludes(item.properties.roles, 'showViews')"
             :key="item.prop"
             :label="item.label"
             :style="gridItemStyle(item)"
@@ -27,17 +27,17 @@
           >
             <template slot="label">
               <!-- <i class="el-icon-info"></i>  -->
-              <span>{{item.label}}</span>
+              <span @click="$emit('clickRow', index)">{{item.label}}</span>
               <span style="color: red; margin-left: 5px" v-if="item.properties.isRequired">*</span>
               <br />
-              <el-tag v-if="devMode" style="margin-left: 5px" type="info">{{item.prop}}</el-tag>
+              <el-tag @click="$emit('clickRow', index)" v-if="devMode" style="margin-left: 5px" type="info">{{item.prop}}</el-tag>
             </template>
             <!-- {{item.options}} -->
             <component
               :is="item.component"
               v-model="previewFormData[item.prop]"
               v-bind="item.properties.props.inner"
-              :disabled="roleIncludes(item.properties.roles, 'readOnlyRoles')"
+              :disabled="viewIncludes(item.properties.roles, 'readOnlyRoles')"
             >
               <!-- 以下是针对特定组件的选项渲染逻辑 -->
               <template v-if="item.component === 'el-select'">
@@ -63,6 +63,7 @@
                 >{{ option.label }}</el-checkbox>
               </template>
             </component>
+            <br />
             <el-tag v-if="devMode">{{item.component}}</el-tag>
           </el-form-item>
         </template>
@@ -70,7 +71,7 @@
       <div class="form-actions">
         <template v-for="button in formOptions.actionButtons">
           <el-button
-            v-if="roleIncludes(button.roles, 'showViews')"
+            v-if="viewIncludes(button.roles, 'showViews')"
             :key="button.id"
             v-bind="button.props"
             @click="handleButtonClick(button.onClick)"
@@ -98,7 +99,7 @@ export default {
     }
   },
   methods: {
-    roleIncludes (roles, type) {
+    viewIncludes (roles, type) {
       return roles[type].includes(this.currentView)
     },
     handleButtonClick(methodName) {

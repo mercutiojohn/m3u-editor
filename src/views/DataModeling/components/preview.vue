@@ -2,40 +2,6 @@
   <div class="preview" style="width: 100%; height: 100vh; flex-shrink: 0">
     <!-- <h3>实时预览</h3> -->
     <el-tabs type="border-card" style="height: 100%">
-      <el-tab-pane label="el-table 预览">
-        <div style="display: flex; gap: 10px">
-          <table-preview style="width: 100%" :tableOptions="coreData.tableOptions" :previewTableData="previewTableData.length ? previewTableData : examplePreviewTableData" :previewTableColumns="previewTableColumns" />
-          <div class="sidebar" style="width: 500px; flex-shrink: 0">
-            <h4>模拟数据</h4>
-            <vue-json-editor
-              style="width: 100%"
-              v-model="previewTableData"
-              :showBtns="false"
-              :mode="'tree'"
-              lang="zh"
-              :expandedOnStart="true"
-            />
-          </div>
-        </div>
-      </el-tab-pane>
-
-      <el-tab-pane label="el-form 预览">
-        <div style="display: flex; gap: 10px">
-          <form-preview style="width: 100%" :formOptions="coreData.formOptions" :previewFormData="previewFormData" :previewFormItems="previewFormItems" />
-          <div class="sidebar" style="width: 400px; flex-shrink: 0">
-            <h4>模拟数据</h4>
-            <vue-json-editor
-              style="width: 100%; flex-shrink: 0"
-              v-model="previewFormData"
-              :showBtns="false"
-              :mode="'tree'"
-              lang="zh"
-              :expandedOnStart="true"
-            />
-          </div>
-        </div>
-      </el-tab-pane>
-
       <el-tab-pane label="SQL 预览">
         {{coreData.sqlOptions.tableName}}
         <pre>{{ sqlPreview }}</pre>

@@ -1,10 +1,12 @@
 import typeToComponentArray from '../utils/typeToComponentArray'
+import typeToSearchFieldsArray from '../utils/typeToSearchFieldsArray'
 import sqlTypeMappings from '../utils/sqlTypeMappings'
 
 export default {
   data() {
     return {
       typeToComponentArray,
+      typeToSearchFieldsArray,
       sqlTypeMappings,
     }
   },
@@ -15,11 +17,14 @@ export default {
     previewFormItems() {
       return this.previewFormItemsRender(this.coreData.fieldList)
     },
+    previewSearchItems() {
+      return this.previewSearchItemsRender(this.coreData.fieldList)
+    },
     // examplePreviewFormData() {
     //   return this.previewFormDataRender(this.coreData.fieldList)
     // },
     examplePreviewTableData() {
-      return this.examplePreviewTableDataRender(this.coreData.fieldList)
+      return this.examplePreviewTableDataRender(this.coreData.fieldList, this.coreData.roleOptions)
     },
     sqlPreview() {
       return this.sqlPreviewRender(this.coreData.sqlOptions.tableName, this.coreData.fieldList)
@@ -39,6 +44,11 @@ export default {
 
     formType(type) {
       const mapping = typeToComponentArray.find(item => item.type === type);
+      return mapping ? mapping.component : 'el-input'; // 如果找不到匹配项，则回退到 el-input
+    },
+
+    searchType(type) {
+      const mapping = typeToSearchFieldsArray.find(item => item.type === type);
       return mapping ? mapping.component : 'el-input'; // 如果找不到匹配项，则回退到 el-input
     },
 
@@ -63,6 +73,19 @@ export default {
         };
       });
     },
+    previewSearchItemsRender(fieldList = this.coreData.fieldList) {
+      return fieldList.map(field => {
+        const component = this.searchType(field.type);
+        return { 
+          // prop: 'exampleData',
+          prop: field.field,
+          label: field.name || '未命名',
+          component,
+          properties: field.searchFieldProperties,
+          options: this.coreData.dictsOptions.staticDicts[field.bindDict] // TODO: 抽取成自适应静态字典和动态字典的方法
+        };
+      });
+    },
     // previewFormDataRender(fieldList = this.coreData.fieldList) {
     //   let data = {};
     //   fieldList.forEach(field => {
@@ -70,12 +93,28 @@ export default {
     //   });
     //   return data;
     // },
-    examplePreviewTableDataRender(fieldList = this.coreData.fieldList) {
-      let data = {};
-      fieldList.forEach(field => {
-        data[field.field || 'exampleData'] = '示例数据';
-      });
-      return [data, data];
+    examplePreviewTableDataRender(fieldList = this.coreData.fieldList, roleOptions = this.coreData.roleOptions) {
+      if (roleOptions.statuses.length) {
+        let array = []
+        roleOptions.statuses.forEach(status => {
+          let data = {}
+          fieldList.forEach(fieldItem => {
+            if(roleOptions.statusBindField && fieldItem.field === roleOptions.statusBindField) {
+              data[fieldItem.field] = status.id
+            } else {
+              data[fieldItem.field || 'exampleData'] = '示例数据';
+            }
+          });
+          array.push(data)
+        })
+        return array
+      } else {
+        let data = {}
+        fieldList.forEach(fieldItem => {
+          data[fieldItem.field || 'exampleData'] = '示例数据';
+        });
+        return [data, data, data, data, data];
+      }
     },
     // sqlPreviewRender(fieldList = this.coreData.fieldList) {
     //   if (fieldList.length === 0) {

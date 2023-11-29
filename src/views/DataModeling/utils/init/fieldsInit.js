@@ -54,6 +54,12 @@ export default [
           "approve",
           "view"
         ]
+      },
+      "props": {
+        "base": {
+          "labelWidth": ""
+        },
+        "inner": {}
       }
     },
     "javaProperties": {
@@ -129,6 +135,12 @@ export default [
           "approve",
           "view"
         ]
+      },
+      "props": {
+        "base": {
+          "labelWidth": ""
+        },
+        "inner": {}
       }
     },
     "javaProperties": {
@@ -186,7 +198,7 @@ export default [
       },
       "props": {
         "prop": "textTest",
-        "label": "文本测试",
+        "label": "家庭住址",
         "align": "center",
         "headerAlign": "center",
         "minWidth": "",
@@ -203,6 +215,12 @@ export default [
           "approve",
           "view"
         ]
+      },
+      "props": {
+        "base": {
+          "labelWidth": ""
+        },
+        "inner": {}
       }
     },
     "javaProperties": {
@@ -277,6 +295,12 @@ export default [
           "approve",
           "view"
         ]
+      },
+      "props": {
+        "base": {
+          "labelWidth": ""
+        },
+        "inner": {}
       }
     },
     "javaProperties": {
@@ -357,6 +381,12 @@ export default [
           "approve",
           "view"
         ]
+      },
+      "props": {
+        "base": {
+          "labelWidth": ""
+        },
+        "inner": {}
       }
     },
     "javaProperties": {

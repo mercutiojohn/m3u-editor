@@ -25,6 +25,7 @@ export default {
       highlightSelectionRow: false // 是否要高亮复选框选中行（仅针对开启 selection 有效）
     },
     statusColumn: 'status',
+    defaultPageSize: 10, 
     // 表格操作列
     actionButtons: [
       {
@@ -82,14 +83,56 @@ export default {
           showStatus: ['submitted'],
           showViews: ['approve']
         }
+      },
+      {
+        name: '查看',
+        id: 'view',
+        props: {
+            type: 'text',
+            size: 'mini',
+            icon: 'el-icon-view'
+        },
+        onClick: 'handleRowView',
+        roles: {
+          showStatus: ['submitted', 'approved', 'done', 'view'],
+          showViews: ['edit']
+        }
+      },
+      {
+        name: '查看',
+        id: 'view-approve',
+        props: {
+            type: 'text',
+            size: 'mini',
+            icon: 'el-icon-view'
+        },
+        onClick: 'handleRowView',
+        roles: {
+          showStatus: ['approved', 'done', 'view'],
+          showViews: ['approve']
+        }
+      },
+      {
+        name: '查看',
+        id: 'view-view',
+        props: {
+            type: 'text',
+            size: 'mini',
+            icon: 'el-icon-view'
+        },
+        onClick: 'handleRowView',
+        roles: {
+          showStatus: ['submitted', 'approved', 'done', 'view'],
+          showViews: ['view']
+        }
       }
     ],
   },
   // 查询条件全局选项
   searchFieldsOptions: {
     props: {
-      labelPosition: 'left',	// 字段标签位置
-      labelWidth: '200px', // 标签宽度
+      labelPosition: 'right',	// 字段标签位置
+      labelWidth: '100px', // 标签宽度
       inline: true,
     },
   },
@@ -118,7 +161,7 @@ export default {
         props: {
             type: 'primary',
             size: 'mini',
-            icon: 'el-icon-upload'
+            icon: 'el-icon-check'
         },
         onClick: 'handleFormSubmit',
         roles: {
@@ -128,10 +171,10 @@ export default {
       },
       {
         name: '取消',
-        id: 'submit',
+        id: 'cancel',
         props: {
             size: 'mini',
-            icon: 'el-icon-upload'
+            icon: 'el-icon-close'
         },
         onClick: 'handleFormCancel',
         roles: {
@@ -145,7 +188,7 @@ export default {
         props: {
           type: 'primary',
             size: 'mini',
-            icon: 'el-icon-tick'
+            icon: 'el-icon-check'
         },
         onClick: 'handleFormApprove',
         roles: {
@@ -158,7 +201,7 @@ export default {
         id: 'back',
         props: {
             size: 'mini',
-            icon: 'el-icon-cross'
+            icon: 'el-icon-close'
         },
         onClick: 'handleFormBack',
         roles: {

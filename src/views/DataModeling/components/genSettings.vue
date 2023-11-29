@@ -1,7 +1,22 @@
 <template>
-  <div style="display: flex">
-    <div style="width: 500px">
-      <el-form :model="localGenOptions">
+  <div style="display: flex; height: 100%; gap: 20px">
+    <!-- 路径预览 -->
+    <el-card style="width: 100%;" class="card-full-height scroll">
+      <span slot="header">生成路径预览</span>
+      <div class="path-preview" style="width: 100%; height: 100%; overflow-y: auto">
+        <div v-for="(category, categoryName) in generatedPaths" :key="categoryName">
+          <h4>{{ categoryName }}</h4>
+          <ul>
+            <li v-for="(path, pathName) in category" :key="pathName">
+              {{ pathName }}：<pre>{{ path }}</pre>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </el-card>
+    <!-- 生成配置 -->
+    <div style="width: 500px; height: 100%; overflow-y: auto; flex-shrink: 0">
+      <el-form :model="localGenOptions" label-width="100px" label-position="left">
         <h3>生成配置</h3>
         <el-form-item label="功能作者">
           <el-input v-model="localGenOptions.functionAuthor"></el-input>
@@ -34,7 +49,7 @@
         </el-form-item>
       </el-form>
       <h3>Java 配置</h3>
-      <el-form :model="localJavaOptions">
+      <el-form :model="localJavaOptions" label-width="100px" label-position="left">
         <!-- Java 选项字段 -->
         <el-form-item label="包名">
           <el-input v-model="localJavaOptions.packageName"></el-input>
@@ -44,7 +59,7 @@
         </el-form-item>
       </el-form>
       <h3>SQL 配置</h3>
-      <el-form :model="localSqlOptions">
+      <el-form :model="localSqlOptions" label-width="100px" label-position="left">
         <!-- SQL 选项字段 -->
         <el-form-item label="表名">
           <el-input v-model="localSqlOptions.tableName"></el-input>
@@ -54,18 +69,6 @@
         </el-form-item>
       </el-form>
       <!-- <el-button type="primary" @click="saveOptions">保存</el-button> -->
-    </div>
-    <!-- 路径预览 -->
-    <div class="path-preview">
-      <h3>生成路径预览：</h3>
-      <div v-for="(category, categoryName) in generatedPaths" :key="categoryName">
-        <h4>{{ categoryName }}</h4>
-        <ul>
-          <li v-for="(path, pathName) in category" :key="pathName">
-            {{ pathName }}：{{ path }}
-          </li>
-        </ul>
-      </div>
     </div>
   </div>
 </template>
@@ -148,6 +151,19 @@ export default {
 };
 </script>
 
-<style scoped>
-/* 您的样式 */
+<style lang="scss" scoped>
+.card-full-height ::v-deep {
+  .el-card__body {
+    box-sizing: border-box;
+    padding: 0;
+    height: calc(100% - 60px);
+    &.scroll {
+      overflow-y: scroll;
+    }
+  }
+}
+.path-preview {
+  box-sizing: border-box;
+  padding: 20px;
+}
 </style>

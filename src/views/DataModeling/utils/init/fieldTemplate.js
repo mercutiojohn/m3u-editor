@@ -50,6 +50,16 @@ export default {
     roles: {
       showViews: ['edit', 'approve', 'view'], // 字段显示的视图
     },
+    props: {
+      // Form Item 配置
+      base: {
+        labelWidth: '' // TODO
+      },
+      // Input 配置 // TODO：动态加载，不同类型预设；初始化选择总 type 自动填入该值 props；v-bind
+      inner: {
+  
+      }
+    },
   },
   javaProperties: {
     javaField: 'textTest',
