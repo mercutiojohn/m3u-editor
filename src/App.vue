@@ -2,22 +2,9 @@
   <div id="app">
     <el-menu :default-active="$route.path" :router="true" class="nav nav-reset" mode="horizontal">
       <el-menu-item index="/">Home</el-menu-item>
-      <el-menu-item index="/panel">Panel</el-menu-item>
-      <el-menu-item index="/crud">Crud</el-menu-item>
-      <el-menu-item index="/grid">Grid</el-menu-item>
       <el-menu-item index="/generate-m3u">GenerateM3U</el-menu-item>
-      <el-menu-item index="/ical-to-epg">iCalToEPG</el-menu-item>
-      <el-menu-item index="/geojson-combine">GeoJSON Combine</el-menu-item>
-      <el-menu-item index="/edit-ical">Edit iCal</el-menu-item>
-      <el-menu-item index="/data-modeling">Data Modeling</el-menu-item>
-      <el-menu-item index="/map-download">Map Download</el-menu-item>
       <el-menu-item index="/about">About</el-menu-item>
     </el-menu>
-     <!-- <nav>
-       <router-link to="/">Home</router-link> |
-       <router-link to="/crud">Crud</router-link> |
-       <router-link to="/about">About</router-link>
-     </nav> -->
      <router-view class="content"/>
    </div>
 </template>
