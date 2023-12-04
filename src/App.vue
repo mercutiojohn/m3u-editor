@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <el-menu :default-active="$route.path" :router="true" class="nav nav-reset" mode="horizontal">
-      <el-menu-item index="/">Home</el-menu-item>
-      <el-menu-item index="/generate-m3u">GenerateM3U</el-menu-item>
-      <el-menu-item index="/about">About</el-menu-item>
+      <el-menu-item index="/">首页</el-menu-item>
+      <el-menu-item index="/generate-m3u">M3U 编辑器</el-menu-item>
+      <el-menu-item index="/about">关于</el-menu-item>
     </el-menu>
      <router-view class="content"/>
    </div>
