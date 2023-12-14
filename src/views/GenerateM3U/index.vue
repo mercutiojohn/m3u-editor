@@ -36,7 +36,10 @@
             清空
           </el-button>
         </div>
-        <el-table ref="dragTable" :data="channels" height="100%" row-key="url" id="m3u-edit-table">
+        <el-table ref="dragTable" :data="channels" height="100%" row-key="columnId" id="m3u-edit-table">
+          <el-table-column label="" align="center" width="40" class-name="allowDrag">
+            <i class="i-fluent:re-order-dots-vertical-16-regular font-size-16px"></i>
+          </el-table-column>
           <el-table-column prop="logo" label="" width="60" show-overflow-tooltip>
             <div slot-scope="props" style="display: flex; align-items:center; justify-content: center;">
               <!-- <div class="box" style="width: 40px;height: 40px; background: #efefef; border-radius: 10px; overflow: hidden">
@@ -276,7 +279,7 @@ export default {
       // videoSrc: 'http://sk.cri.cn/887.m3u8',
       // video: null,
       // hls: null,
-
+      sortable: null
     };
   },
   computed: {
@@ -402,9 +405,9 @@ export default {
     },
     addNewChannel(index = -1) {
       if (index === -1) {
-        this.channels.push({ ...this.channelTemplate });
+        this.channels.push({ ...this.channelTemplate, columnId: Date.now() });
       } else {
-        this.channels.splice(index, 0, { ...this.channelTemplate });
+        this.channels.splice(index, 0, { ...this.channelTemplate, columnId: Date.now() });
       }
       this.saveM3UChannels()
     },
@@ -567,13 +570,13 @@ export default {
       }
     })
     const el = this.$refs.dragTable.$el.querySelectorAll(".el-table__body-wrapper > table > tbody")[0];
-    const sortable = Sortable.create(el, {
+    this.sortable = Sortable.create(el, {
       handle: ".allowDrag",
       onEnd: evt => {
-        const targetRow = this.columns.splice(evt.oldIndex, 1)[0];
-        this.columns.splice(evt.newIndex, 0, targetRow);
-        for (let index in this.columns) {
-          this.columns[index].sort = parseInt(index) + 1;
+        const targetRow = this.channels.splice(evt.oldIndex, 1)[0];
+        this.channels.splice(evt.newIndex, 0, targetRow);
+        for (let index in this.channels) {
+          this.channels[index].sort = parseInt(index) + 1;
         }
       }
     });
