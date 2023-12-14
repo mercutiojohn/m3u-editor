@@ -36,70 +36,68 @@
             清空
           </el-button>
         </div>
-        <el-table-draggable style="height: calc(100% - 100px)">
-          <el-table :data="channels" height="100%" row-key="url" id="m3u-edit-table">
-            <el-table-column prop="logo" label="" width="60" show-overflow-tooltip>
-              <div slot-scope="props" style="display: flex; align-items:center; justify-content: center;">
-                <!-- <div class="box" style="width: 40px;height: 40px; background: #efefef; border-radius: 10px; overflow: hidden">
-                  <img :src="props.row?.logo || 'vite.svg'" alt="" srcset="" style="width: 100%;height: 100%;object-fit:border-box" />
-                </div> -->
-                <!-- <el-avatar v-if="props.row.logo" shape="square" :src="props.row.logo" @error="logoErrorHandler"></el-avatar> -->
-                <!-- v-if="props.row.logo" -->
-                <!-- <div class="box" v-else style="width: 40px;height: 40px; overflow: hidden;display: flex; align-items: center; justify-content: center">
-                  无
-                </div> -->
-                <el-image 
-                  :src="props.row.logo"
-                  referer-policy="no-referrer"
-                  style="width: 40px; height: 40px"
-                  :preview-src-list="[props.row.logo]"
-                  scroll-container="#m3u-edit-table"
-                  lazy>
-                </el-image>
-              </div>
-            </el-table-column>
-            <el-table-column prop="name" label="频道名" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="platform" label="平台" width="120" :formatter="genericFormatter" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="groupTitle" label="分类" width="120" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="url" label="URL" show-overflow-tooltip></el-table-column>
-            <!-- <el-table-column type="expand">
-              <template slot-scope="props">
-                <el-form :model="props.row" label-width="120px">
-                  <el-form-item label="平台">
-                    <el-select v-model="props.row.platform" placeholder="请选择平台" @change="$forceUpdate()">
-                      <el-option v-for="(platform, idx) in platforms" :label="platform.name" :value="platform.key" :key="idx"></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="UID" v-if="fyPlatforms.includes(props.row.platform)">
-                    <el-input v-model="props.row.uid"></el-input>
-                  </el-form-item>
-                  <el-form-item label="URL" v-if="['custom'].includes(props.row.platform)">
-                    <el-input v-model="props.row.url"></el-input>
-                  </el-form-item>
-                  <el-form-item label="Logo URL">
-                    <el-input v-model="props.row.logo"></el-input>
-                  </el-form-item>
-                  <el-form-item label="频道名">
-                    <el-input v-model="props.row.name"></el-input>
-                  </el-form-item>
-                  <el-form-item label="分类">
-                    <el-input v-model="props.row.groupTitle"></el-input>
-                  </el-form-item>
-                </el-form>
-              </template>
-            </el-table-column> -->
-            <el-table-column label="操作" width="220">
-              <template slot-scope="scope">
-                <!-- <el-button @click="playUrl(scope.row.url)" size="mini" class="button-reset ghost slim"><i class="i-fluent:play-16-regular font-size-16px"></i></el-button> -->
-                <el-button @click="pushRedirectUrl(scope.row.url)" size="mini" class="button-reset ghost slim"><i class="i-fluent:play-16-regular font-size-16px"></i></el-button>
-                <el-button @click="pushRedirectUrl(getRedirectUrl(scope.row))" v-if="getRedirectUrl(scope.row)" size="mini" class="button-reset ghost slim"><i class="i-fluent:open-16-regular font-size-16px"></i></el-button>
-                <el-button @click="editChannel(scope.row, scope.$index)" size="mini" class="button-reset ghost slim"><i class="i-fluent:edit-16-regular font-size-16px"></i></el-button>
-                <el-button @click="addNewChannel(scope.$index + 1)" size="mini" class="button-reset ghost slim"><i class="i-fluent:add-16-regular font-size-16px"></i></el-button>
-                <el-button @click="deleteChannel(scope.$index)" type="danger" size="mini" class="button-reset ghost slim"><i class="i-fluent:delete-16-regular font-size-16px"/></el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-table-draggable>
+        <el-table ref="dragTable" :data="channels" height="100%" row-key="url" id="m3u-edit-table">
+          <el-table-column prop="logo" label="" width="60" show-overflow-tooltip>
+            <div slot-scope="props" style="display: flex; align-items:center; justify-content: center;">
+              <!-- <div class="box" style="width: 40px;height: 40px; background: #efefef; border-radius: 10px; overflow: hidden">
+                <img :src="props.row?.logo || 'vite.svg'" alt="" srcset="" style="width: 100%;height: 100%;object-fit:border-box" />
+              </div> -->
+              <!-- <el-avatar v-if="props.row.logo" shape="square" :src="props.row.logo" @error="logoErrorHandler"></el-avatar> -->
+              <!-- v-if="props.row.logo" -->
+              <!-- <div class="box" v-else style="width: 40px;height: 40px; overflow: hidden;display: flex; align-items: center; justify-content: center">
+                无
+              </div> -->
+              <el-image 
+                :src="props.row.logo"
+                referer-policy="no-referrer"
+                style="width: 40px; height: 40px"
+                :preview-src-list="[props.row.logo]"
+                scroll-container="#m3u-edit-table"
+                lazy>
+              </el-image>
+            </div>
+          </el-table-column>
+          <el-table-column prop="name" label="频道名" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="platform" label="平台" width="120" :formatter="genericFormatter" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="groupTitle" label="分类" width="120" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="url" label="URL" show-overflow-tooltip></el-table-column>
+          <!-- <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form :model="props.row" label-width="120px">
+                <el-form-item label="平台">
+                  <el-select v-model="props.row.platform" placeholder="请选择平台" @change="$forceUpdate()">
+                    <el-option v-for="(platform, idx) in platforms" :label="platform.name" :value="platform.key" :key="idx"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="UID" v-if="fyPlatforms.includes(props.row.platform)">
+                  <el-input v-model="props.row.uid"></el-input>
+                </el-form-item>
+                <el-form-item label="URL" v-if="['custom'].includes(props.row.platform)">
+                  <el-input v-model="props.row.url"></el-input>
+                </el-form-item>
+                <el-form-item label="Logo URL">
+                  <el-input v-model="props.row.logo"></el-input>
+                </el-form-item>
+                <el-form-item label="频道名">
+                  <el-input v-model="props.row.name"></el-input>
+                </el-form-item>
+                <el-form-item label="分类">
+                  <el-input v-model="props.row.groupTitle"></el-input>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column> -->
+          <el-table-column label="操作" width="220">
+            <template slot-scope="scope">
+              <!-- <el-button @click="playUrl(scope.row.url)" size="mini" class="button-reset ghost slim"><i class="i-fluent:play-16-regular font-size-16px"></i></el-button> -->
+              <el-button @click="pushRedirectUrl(scope.row.url)" size="mini" class="button-reset ghost slim"><i class="i-fluent:play-16-regular font-size-16px"></i></el-button>
+              <el-button @click="pushRedirectUrl(getRedirectUrl(scope.row))" v-if="getRedirectUrl(scope.row)" size="mini" class="button-reset ghost slim"><i class="i-fluent:open-16-regular font-size-16px"></i></el-button>
+              <el-button @click="editChannel(scope.row, scope.$index)" size="mini" class="button-reset ghost slim"><i class="i-fluent:edit-16-regular font-size-16px"></i></el-button>
+              <el-button @click="addNewChannel(scope.$index + 1)" size="mini" class="button-reset ghost slim"><i class="i-fluent:add-16-regular font-size-16px"></i></el-button>
+              <el-button @click="deleteChannel(scope.$index)" type="danger" size="mini" class="button-reset ghost slim"><i class="i-fluent:delete-16-regular font-size-16px"/></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
         <div class="footer">
           <el-button @click="addNewChannel">
             <i class="i-fluent:add-16-regular font-size-16px" />
@@ -221,11 +219,11 @@
 
 <script>
 import Video from './components/video.vue';
-import ElTableDraggable from "el-table-draggable";
+import Sortable from 'sortablejs'
 
 export default {
   name: 'GenerateM3U',
-  components: {Video, ElTableDraggable},
+  components: {Video},
   data() {
     return {
       channelTemplate: {
@@ -433,7 +431,7 @@ export default {
       if (channel){
       let url = '';
         if (platformTypes['fy'].includes(channel.platform)) {
-          url = `http://${options.ip || '<ip>'}:${options.port || '<port>'}/${channel.platform}/${channel.uid || '<uid>'}`
+          url = `http://${options.ip || '<ip>'}${options.port ? ':' + options.port : ''}/${channel.platform}/${channel.uid || '<uid>'}`
           channel.url = url
         } else {
           switch (channel.platform) {
@@ -446,7 +444,7 @@ export default {
           }
         }
         const attributes = {
-          'tvg-id': index,
+          'tvg-id': channel.name,
           'tvg-name': channel.tvgName,
           'group-title': channel.groupTitle,
           'tvg-country': channel.country,
@@ -568,6 +566,17 @@ export default {
         ...res
       }
     })
+    const el = this.$refs.dragTable.$el.querySelectorAll(".el-table__body-wrapper > table > tbody")[0];
+    const sortable = Sortable.create(el, {
+      handle: ".allowDrag",
+      onEnd: evt => {
+        const targetRow = this.columns.splice(evt.oldIndex, 1)[0];
+        this.columns.splice(evt.newIndex, 0, targetRow);
+        for (let index in this.columns) {
+          this.columns[index].sort = parseInt(index) + 1;
+        }
+      }
+    });
     // this.options = this.getLocalStorageItemIfExists('m3u-options')
   }
 };
