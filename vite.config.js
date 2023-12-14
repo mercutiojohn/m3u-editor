@@ -19,6 +19,7 @@ export default {
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
+      // ElTable不显示，https://github.com/ElemeFE/element/issues/21968#issuecomment-1537071209
       vue: 'vue/dist/vue.esm.js',
     },
   },
