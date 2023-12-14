@@ -52,6 +52,7 @@
     "osp-vue-json-editor": "^1.4.3",
     "radix-vue": "^0.4.1",
     "sass": "^1.69.3",
+    "sortablejs": "^1.15.1",
     "turf": "^3.0.14",
     "videojs-flvjs": "^0.2.0",
     "vite-plugin-vue2": "^2.0.3",
